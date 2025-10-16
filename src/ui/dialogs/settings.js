@@ -4,13 +4,8 @@ import { tl } from '../../util/intl'
 import { ERROR } from '../../util/errors'
 import events from '../../constants/events'
 import React, { useEffect, useRef, useState } from 'react'
-import { DefaultSettings, settings, ForeignSettingTranslationKeys } from '../../settings'
-import { isInternalModel, getModelExportFolder } from '../../util/utilz'
-import { debug } from 'console'
+import { DefaultSettings, settings } from '../../settings'
 
-import { updateSettingsOnProjectChange } from '../../settings.js'
-
-const dialog = electron.dialog
 let updateSettingsUiActions = {}
 let forceUpdateSettingsUi = () => {
 	Object.values(updateSettingsUiActions).forEach((action) => action())
@@ -103,9 +98,9 @@ const RenderTemplates = {
 								e.preventDefault()
 								let d
 								if (target === 'file') {
-									d = dialog.showSaveDialog(dialogOpts)
+									d = electron.dialog.showSaveDialog(dialogOpts)
 								} else {
-									d = dialog.showOpenDialog(dialogOpts)
+									d = electron.dialog.showOpenDialog(dialogOpts)
 								}
 								d.then((res) => {
 									if (!res.canceled) {

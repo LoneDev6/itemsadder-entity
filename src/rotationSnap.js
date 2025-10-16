@@ -74,14 +74,6 @@ Blockbench.on('update_selection', () => {
 		prevCube = Cube.selected[0];
 	}
 })
-const _condition = BarItems.rescale_toggle.condition
-BarItems.rescale_toggle.condition = function () {
-	if (Format.id === format.id) {
-		return true
-	} else {
-		return _condition.apply(this)
-	}
-}
 
 bus.on(EVENTS.LIFECYCLE.LOAD, () => {
 	const frame = () => {
@@ -146,6 +138,5 @@ bus.on(EVENTS.LIFECYCLE.LOAD, () => {
 	requestAnimationFrame(frame)
 	bus.on(EVENTS.LIFECYCLE.CLEANUP, () => {
 		cancelAnimationFrame(frame)
-		BarItems.rescale_toggle.condition = _condition
 	})
 })

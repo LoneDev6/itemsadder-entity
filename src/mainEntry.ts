@@ -78,7 +78,59 @@ import {
 } from './modelComputation'
 
 
-import axios from 'axios';
+async function fetchJson(url, {
+  method = 'GET',
+  headers = {},
+  body = undefined,
+  timeoutMs = 10000,
+  token = null
+} = {}) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), timeoutMs);
+
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'iaentity-plugin',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        ...headers
+      },
+      body,
+      credentials: 'omit',
+      signal: ctrl.signal
+    });
+
+    const contentType = res.headers.get('content-type') || '';
+    const isJson = contentType.includes('application/json');
+
+    const data = isJson ? await res.json() : await res.text();
+
+    // Build an axios-like response
+    const response = {
+      data,                          // parsed body
+      status: res.status,            // status code
+      statusText: res.statusText,    // status text
+		// @ts-ignore
+	  headers: Object.fromEntries(res.headers.entries()),
+      url: res.url,
+      ok: res.ok,                    // convenience flag
+      request: { url, method }       // minimal request info
+    };
+
+    if (!res.ok) {
+      const err = new Error(`HTTP ${res.status} ${res.statusText}`);
+			// @ts-ignore
+      err.response = response;
+      throw err;
+    }
+
+    return response;
+  } finally {
+    clearTimeout(t);
+  }
+}
 
 async function checkForUpdates() {
     try {
@@ -89,8 +141,8 @@ async function checkForUpdates() {
         }
 
         // Fetch the latest release from GitHub
-        const response = await axios.get('https://api.github.com/repos/LoneDev6/itemsadder-entity/releases/latest');
-        const latestVersion = response.data.tag_name;
+        const { data } = await fetchJson('https://api.github.com/repos/LoneDev6/itemsadder-entity/releases/latest');
+  			const latestVersion = data.tag_name;
 
         if (latestVersion !== currentVersion) {
 					console.log('A new update is available!');
@@ -106,7 +158,7 @@ async function checkForUpdates() {
 
 							// Iterate response.data.assets and get the .js file URL
 							// Open the URL in the default browser
-							response.data.assets.forEach((asset: any) => {
+							data.assets.forEach((asset: any) => {
 								if (asset.name.endsWith('.js')) {
 									//require('electron').shell.openExternal(asset.browser_download_url);
 									
