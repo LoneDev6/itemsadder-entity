@@ -488,6 +488,10 @@ let yTranslation = 5.6
 
 export function isJavaCubeOutOfBoundsAdjustScale(cube) {
 	computeScaleModifiers() // Might be heavy I think. Call it elsewhere less times.
+	if (!cube.parent || !cube.parent.origin) { // Just in case.
+		console.error('Cube parent or parent origin is undefined');
+		return;
+	}
 	let newFrom = cube.from.map((v, i) => v - cube.parent.origin[i])
 	let newTo = cube.to.map((v, i) => v - cube.parent.origin[i])
 

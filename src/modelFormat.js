@@ -10,9 +10,11 @@ import * as basePlayerModelBlank from './assets/player_emote_blank.json';
 import { fixMinecraftTexturesReferences } from './util/utilz'
 import { isJavaCubeOutOfBoundsAdjustScale } from './modelComputation'
 
+import fs from 'fs'
+
 let sus = {};
 
-const FORMATV = '0.0'
+const FORMATV = '1.0'
 const codec = new Codec('iaentitymodel', {
 	load_filter: {
 		extensions: ['iaentitymodel'],
@@ -101,7 +103,38 @@ const codec = new Codec('iaentitymodel', {
 			var obj = el.getSaveCopy(model.meta)
 			model.elements.push(obj)
 		})
-		model.outliner = compileGroups(true)
+
+
+		function compileGroups0(undo, lut) {
+			var result = []
+			function iterate(array, save_array) {
+				var i = 0;
+				for (var element of array) {
+					if (element.type === 'group') {
+						var obj = element.compile(undo)
+
+						if (element.children.length > 0) {
+							iterate(element.children, obj.children)
+						}
+						save_array.push(obj)
+					} else {
+						if (undo) {
+							save_array.push(element.uuid)
+						} else {
+							var index = elements.indexOf(element)
+							if (index >= 0) {
+								save_array.push(index)
+							}
+						}
+					}
+					i++;
+				}
+			}
+			iterate(Outliner.root, result);
+			return result;
+		}
+		model.outliner = compileGroups0(true); // 5.0+ fix
+    // model.outliner = compileGroups(true)
 
 		fixMinecraftTexturesReferences();
 
@@ -277,6 +310,7 @@ const codec = new Codec('iaentitymodel', {
 			})
 			//   loadOutlinerDraggable();
 		}
+
 		if (model.outliner) {
 			parseGroups(model.outliner)
 			if (model.meta.bone_rig) {

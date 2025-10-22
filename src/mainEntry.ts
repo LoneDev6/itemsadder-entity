@@ -133,50 +133,68 @@ async function fetchJson(url, {
 }
 
 async function checkForUpdates() {
-    try {
-        // Get the current version from the environment variable
-        const currentVersion = process.env.PLUGIN_VERSION;
-        if (!currentVersion) {
-            throw new Error('Current version is not defined in the environment variables.');
-        }
+	try {
+		// Get the current version from the environment variable
+		const currentVersion = process.env.PLUGIN_VERSION;
+		if (!currentVersion) {
+			throw new Error('Current version is not defined in the environment variables.');
+		}
 
-        // Fetch the latest release from GitHub
-        const { data } = await fetchJson('https://api.github.com/repos/LoneDev6/itemsadder-entity/releases/latest');
-  			const latestVersion = data.tag_name;
+		// Fetch the latest release from GitHub
+		const { data } = await fetchJson('https://api.github.com/repos/LoneDev6/itemsadder-entity/releases/latest');
+		const latestVersion = data.tag_name;
 
-        if (latestVersion !== currentVersion) {
-					console.log('A new update is available!');
+		// Split the latestVersion and currentVersion by dots and compare each segment as numbers
+		const latestParts = latestVersion.replace(/^v/, '').split('.').map(Number);
+		const currentParts = currentVersion.replace(/^v/, '').split('.').map(Number);
 
-					// @ts-ignore
-					Blockbench.showMessageBox({
-						title: 'A new update is available!',
-						icon: 'update',
-						message: `A new update ItemsAdder extension is available! Download version ${latestVersion} from the releases page.`,
-						buttons: ['Download', 'Later'],
-					}, (buttonIdx) => {
-						if(buttonIdx === 0) {
+		let isNewer = false;
+		for (let i = 0; i < Math.max(latestParts.length, currentParts.length); i++) {
+			const latest = latestParts[i] || 0;
+			const current = currentParts[i] || 0;
+			if (latest > current) {
+				isNewer = true;
+				break;
+			} else if (latest < current) {
+				break;
+			}
+		}
 
-							// Iterate response.data.assets and get the .js file URL
-							// Open the URL in the default browser
-							data.assets.forEach((asset: any) => {
-								if (asset.name.endsWith('.js')) {
-									//require('electron').shell.openExternal(asset.browser_download_url);
-									
-									// Uninstall the plugin
-									// @ts-ignore
-									Plugins.all.find(p => p.id == "iaentitymodel").uninstall()
+		if (!isNewer) {
+			return;
+		}
 
-									// Install from URL
-									// @ts-ignore
-									new Plugin().loadFromURL(asset.browser_download_url, true)
-								}
-							});
-						}
-					});
-        }
-    } catch (error) {
-        console.error('Error checking for updates:', error);
-    }
+		console.log('A new update is available!');
+
+		// @ts-ignore
+		Blockbench.showMessageBox({
+			title: 'A new update is available!',
+			icon: 'update',
+			message: `A new update ItemsAdder extension is available! Download version ${latestVersion} from the releases page.`,
+			buttons: ['Download', 'Later'],
+		}, (buttonIdx) => {
+			if (buttonIdx === 0) {
+
+				// Iterate response.data.assets and get the .js file URL
+				// Open the URL in the default browser
+				data.assets.forEach((asset: any) => {
+					if (asset.name.endsWith('.js')) {
+						//require('electron').shell.openExternal(asset.browser_download_url);
+
+						// Uninstall the plugin
+						// @ts-ignore
+						Plugins.all.find(p => p.id == "iaentitymodel").uninstall()
+
+						// Install from URL
+						// @ts-ignore
+						new Plugin().loadFromURL(asset.browser_download_url, true)
+					}
+				});
+			}
+		});
+	} catch (error) {
+		console.error('Error checking for updates:', error);
+	}
 }
 
 // Call the function to check for updates
