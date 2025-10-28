@@ -86,7 +86,8 @@ const openBoneConfig = CustomAction('iaentitymodel.BoneConfig', {
 
 function click (ev: any) {
 	console.log('Opened bone config')
-	const selected = Group.selected as AJGroup
+	// Fucking BlockBench 5.0+ change that makes Group.selected an array
+	const selected = Group.selected[0] as AJGroup
 
 	let form = form1;
 	if(isInternalModel(settings)) {
@@ -157,7 +158,9 @@ function click (ev: any) {
 		}
 	}).show()
 	
-	document.querySelector('#' + selected.boneType)["checked"] = true
+	if(selected.boneType) {
+		document.querySelector('#' + selected.boneType)["checked"] = true
+	}
 
 	if(selected.boneType === "head") {
 		document.querySelector('#maxHeadRotX')["value"] = selected.maxHeadRotX ? selected.maxHeadRotX : 40
