@@ -42,17 +42,23 @@ function hasTexture(model, texture) {
 }
 
 function getModelMCPath(modelPath) {
-	const parts = modelPath.split(path.sep)
+	const parts = modelPath.replace(/\\/g, '/').split('/')
 	const assetsIndex = parts.indexOf('assets')
-	if (assetsIndex) {
-		const relative = parts.slice(assetsIndex + 1) // Remove 'assets' and everything before it from the path
-		const namespace = relative.shift() // Remove the namespace from the path and store it
-		relative.push(relative.pop().replace('.png', '')) // Remove file type (.png)
-		const modelIndex = relative.indexOf('models') // Locate 'model' in the path
+	if (assetsIndex > -1) {
+		const relative = parts.slice(assetsIndex + 1)
+		const namespace = relative.shift()
+		relative.push(relative.pop().replace(/\.png$|\.json$/, ''))
+		const modelIndex = relative.indexOf('models')
 		if (modelIndex > -1) {
-			relative.splice(modelIndex, 1) // Remove 'model' from the path
-			return `${namespace}:${relative.join('/')}` // Generate model path
+			relative.splice(modelIndex, 1)
+			return `${namespace}:${relative.join('/')}`
 		}
+	}
+	const modelIndex = parts.indexOf('models')
+	if (modelIndex > -1) {
+		const relative = parts.slice(modelIndex + 1)
+		relative.push(relative.pop().replace(/\.png$|\.json$/, ''))
+		return `${settings.iaentitymodel.namespace}:${relative.join('/')}`
 	}
 	throw new CustomError({
 		message: `Unable to generate model path for ${modelPath}`,
@@ -243,7 +249,6 @@ function getTexturesOnGroup(group) {
 		.filter((c) => c instanceof Cube)
 		.forEach((cube) => {
 			for (const [faceName, face] of Object.entries(cube.faces)) {
-				
 				// UUID of the builtin player texture, no need to export it.
 				if(face.texture === 'e10a3209-9ffd-9d01-d2d9-0dd09446ec62')
 					continue;

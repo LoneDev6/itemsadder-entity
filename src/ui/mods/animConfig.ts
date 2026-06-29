@@ -88,6 +88,47 @@ Animation.prototype.menu.structure.splice(15, 0, '_')
 
 
 markerColors[-1] = {pastel: '#ffffff', standard: '#ffffff', name: 'loop_start_end'}
+
+function getLoopStartEndMarkers(animation) {
+	const markers = animation?.markers
+		?.filter(marker => marker.color === -1)
+		.sort((a, b) => a.time - b.time)
+
+	if (!markers || markers.length < 2 || markers[0].time === markers[1].time) return null
+	return [markers[0], markers[1]]
+}
+
+let activePlaybackLoopMarkers = null
+const originalTimelineStart = Timeline.start
+Timeline.start = function () {
+	const animation = (Animation as any).selected
+	const loopMarkers = isCustomFormat() && animation?.loop === 'loop'
+		? getLoopStartEndMarkers(animation)
+		: null
+	activePlaybackLoopMarkers = loopMarkers && Timeline.time >= loopMarkers[0].time && Timeline.time <= loopMarkers[1].time
+		? loopMarkers
+		: null
+	return originalTimelineStart.apply(this, arguments)
+}
+
+const originalTimelineLoop = Timeline.loop
+Timeline.loop = function () {
+	const loopMarkers = activePlaybackLoopMarkers
+
+	if (!loopMarkers) {
+		return originalTimelineLoop.apply(this, arguments)
+	}
+
+	const timeline = Timeline as any
+	const previousRange = [...timeline.custom_range]
+	timeline.custom_range = [loopMarkers[0].time, loopMarkers[1].time]
+	try {
+		return originalTimelineLoop.apply(this, arguments)
+	} finally {
+		timeline.custom_range = previousRange
+	}
+}
+
 // @ts-ignore
 TimelineMarker.prototype.menu.structure.splice(1, 0, '_')
 // @ts-ignore

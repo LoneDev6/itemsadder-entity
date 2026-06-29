@@ -5,8 +5,9 @@ import * as fs from 'fs'
 import { tl } from './util/intl'
 import { registerLanguages } from './lang/register'
 import { checkForUpdates } from './plugin/updateChecker'
+import { registerLifecycleRedirects } from './lifecycle'
+import { registerPluginDefinition } from './pluginDefinitions'
 
-import './lifecycle'
 import './rotationSnap'
 import './ui/panel/states'
 import './ui/dialogs/settings'
@@ -38,6 +39,8 @@ import {
 } from './modelComputation'
 
 registerLanguages()
+registerLifecycleRedirects()
+registerPluginDefinition()
 checkForUpdates();
 
 export const BuildModel = (callback: any, options: any) => {
@@ -150,7 +153,6 @@ async function computeAnimationData(
 	console.groupEnd()
 }
 
-import './pluginDefinitions'
 import { show_settings } from './ui/dialogs/settings'
 import { show_about } from './ui/dialogs/about'
 

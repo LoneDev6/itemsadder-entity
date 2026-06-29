@@ -58,20 +58,24 @@ export function getProjectFolder() {
     return path.normalize(dirPath)
 }
 
-export function getModelExportFolder(settings) {
+export function getProjectRootFolder() {
     let fileName = Project.save_path.replace(/\\/g, '/').split('/').pop()
     let dirPath = Project.save_path.slice(0, -fileName.length - 1)
 
-	dirPath = path.normalize(dirPath)
+    return path.normalize(dirPath)
+}
 
-    const modelsPath = normalizePath(path.join(
-		dirPath,
-		"assets",
-		settings.iaentitymodel.namespace,
-		"models", 
-		"entity",
-        settings.iaentitymodel.projectName
-	))
+function shouldExportIntoAssets(projectRoot: string) {
+    return fs.existsSync(path.join(projectRoot, 'assets'))
+}
+
+export function getModelExportFolder(settings) {
+    const projectRoot = getProjectRootFolder()
+    const folderParts = shouldExportIntoAssets(projectRoot)
+        ? [projectRoot, "assets", settings.iaentitymodel.namespace, "models", "entity", settings.iaentitymodel.projectName]
+        : [projectRoot, "models", "entity", settings.iaentitymodel.projectName]
+
+    const modelsPath = normalizePath(path.join(...folderParts))
 
     // Dirty way
     //if(!isInternalModel(settings)) {
@@ -82,19 +86,12 @@ export function getModelExportFolder(settings) {
 }
 
 export function getTexturesExportFolder(settings) {
-    let fileName = Project.save_path.replace(/\\/g, '/').split('/').pop()
-    let dirPath = Project.save_path.slice(0, -fileName.length - 1)
+    const projectRoot = getProjectRootFolder()
+    const folderParts = shouldExportIntoAssets(projectRoot)
+        ? [projectRoot, "assets", settings.iaentitymodel.namespace, "textures", "entity", settings.iaentitymodel.projectName]
+        : [projectRoot, "textures", "entity", settings.iaentitymodel.projectName]
 
-	dirPath = normalizePath(dirPath)
-
-    const texturesPath = normalizePath(path.join(
-		dirPath,
-		"assets",
-		settings.iaentitymodel.namespace,
-		"textures", 
-		"entity",
-        settings.iaentitymodel.projectName
-	))
+    const texturesPath = normalizePath(path.join(...folderParts))
 
     // Dirty way
     //if(!isInternalModel(settings)) {

@@ -173,7 +173,7 @@ iaentitymodel:
       normal: Generic bone
       leftHandPivot: Left hand pivot
       rightHandPivot: Right hand pivot
-      hatHandPivot: Hat pivot
+      hatPivot: Hat pivot
       mount: Mount (used as seat location)
       locator: Locator (used for effects location)
       hitbox: Hitbox (area which can be attacked/interacted)

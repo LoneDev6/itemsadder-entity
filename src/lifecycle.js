@@ -8,12 +8,21 @@ const redirect = (from, to) => {
 	})
 }
 
-console.groupCollapsed('lifecycle event redirects')
-redirect(EVENTS.PLUGIN.INSTALL, EVENTS.LIFECYCLE.INSTALL)
-redirect(EVENTS.PLUGIN.LOAD, EVENTS.LIFECYCLE.LOAD)
-redirect(EVENTS.PLUGIN.UNINSTALL, EVENTS.LIFECYCLE.UNINSTALL)
-redirect(EVENTS.PLUGIN.UNLOAD, EVENTS.LIFECYCLE.UNLOAD)
+let registered = false
 
-redirect(EVENTS.PLUGIN.UNINSTALL, EVENTS.LIFECYCLE.CLEANUP)
-redirect(EVENTS.PLUGIN.UNLOAD, EVENTS.LIFECYCLE.CLEANUP)
-console.groupEnd()
+export function registerLifecycleRedirects() {
+	if (registered) {
+		return
+	}
+
+	registered = true
+	console.groupCollapsed('lifecycle event redirects')
+	redirect(EVENTS.PLUGIN.INSTALL, EVENTS.LIFECYCLE.INSTALL)
+	redirect(EVENTS.PLUGIN.LOAD, EVENTS.LIFECYCLE.LOAD)
+	redirect(EVENTS.PLUGIN.UNINSTALL, EVENTS.LIFECYCLE.UNINSTALL)
+	redirect(EVENTS.PLUGIN.UNLOAD, EVENTS.LIFECYCLE.UNLOAD)
+
+	redirect(EVENTS.PLUGIN.UNINSTALL, EVENTS.LIFECYCLE.CLEANUP)
+	redirect(EVENTS.PLUGIN.UNLOAD, EVENTS.LIFECYCLE.CLEANUP)
+	console.groupEnd()
+}

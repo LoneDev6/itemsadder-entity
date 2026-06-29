@@ -49,6 +49,14 @@ const codec = new Codec('iaentitymodel', {
 			(path) => scope.afterDownload(path)
 		)
 	},
+	afterDownload(path) {
+		Project.save_path = path
+		Project.saved = true
+	},
+	afterSave(path) {
+		Project.save_path = path
+		Project.saved = true
+	},
 	load(model, file) {
 		newProject(model.meta.type || 'free')
 		var name = pathToName(file.path, true)

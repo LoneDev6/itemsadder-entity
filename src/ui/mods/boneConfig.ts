@@ -13,17 +13,17 @@ export type AJGroup = {
 	locator: boolean
 	hitbox: boolean
 	boneType: string
-	maxHeadRotX: number
-	maxHeadRotY: number
+	maxHeadRotX?: number
+	maxHeadRotY?: number
 } & Group
 
 const internalForm = {
 	boneType: {
-		type: 'radio',
+		type: 'select',
 		label: tl(
 			'iaentitymodel.dialogs.boneConfig.boneType'
 		),
-		value: false,
+		value: 'normal',
 		options: {
 			"normal": tl('iaentitymodel.dialogs.boneConfig.normal'),
 			"locator": tl('iaentitymodel.dialogs.boneConfig.locator'),
@@ -33,11 +33,11 @@ const internalForm = {
 
 const form1 = {
 	boneType: {
-		type: 'radio',
+		type: 'select',
 		 label: tl(
 			 'iaentitymodel.dialogs.boneConfig.boneType'
 		 ),
-		 value: false,
+		 value: 'normal',
 		options: {
 			"normal": tl('iaentitymodel.dialogs.boneConfig.normal'),
 			"hatPivot": tl('iaentitymodel.dialogs.boneConfig.hatPivot'),
@@ -54,12 +54,6 @@ const form1 = {
 const form2 = {
 	...form1,
 	separator : '_',
-	title_headProperties: { // hack to show a "title"
-		type: "radio",
-		label: tl(
-			'iaentitymodel.dialogs.boneConfig.headProperties'
-		),
-	},
 	maxHeadRotX: {
 		type: 'number',
 		 label: tl(
@@ -78,16 +72,69 @@ const form2 = {
 
 const openBoneConfig = CustomAction('iaentitymodel.BoneConfig', {
 	name: 'Bone Config',
-	icon: 'settings',
+	icon: 'fas.fa-bone',
 	category: 'edit',
-	condition: isCustomFormat,
+	condition: () => isCustomFormat() && ((Group.selected as any) || []).length > 0,
 	click: click,
 })
 
 function click (ev: any) {
 	console.log('Opened bone config')
 	// Fucking BlockBench 5.0+ change that makes Group.selected an array
-	const selected = Group.selected[0] as AJGroup
+	const selected = (Group.selected as any)[0] as AJGroup
+	if (!selected) return
+
+	function applyBoneConfig(formData: any, dialog: Dialog) {
+		console.log(formData)
+		selected.boneType = formData.boneType
+
+		if(selected.boneType === "head") {
+			selected.maxHeadRotX = formData.maxHeadRotX ?? 40
+			selected.maxHeadRotY = formData.maxHeadRotY ?? 75
+			
+			// Apply this change to every other head bone
+			for(const group of Group.all as AJGroup[]) {
+				if(group.boneType === "head") {
+					if(selected.name === group.name)
+						continue
+					else {
+						group.maxHeadRotX = selected.maxHeadRotX
+						group.maxHeadRotY = selected.maxHeadRotY
+					}
+				}
+			}
+		} else {
+			selected.maxHeadRotX = undefined
+			selected.maxHeadRotY = undefined
+		}
+
+		// If hitbox, set texture to completely transparent
+		if (selected.boneType === "hitbox") {
+			for (const group of Group.all as AJGroup[]) {
+				if (group.boneType === "hitbox") {
+					if (selected.name === group.name) {
+						selected.children.forEach((child) => {
+							if (child instanceof Cube) {
+								let cube = child as Cube
+								// @ts-ignore
+								for (const key of Object.keys(cube.faces)) {
+									// @ts-ignore
+									const face = cube.faces[key];
+									face.texture = null; // To make it transparent
+								}
+							}
+						});
+					}
+				}
+
+				// To force updating the textures which I just made transparent
+				Canvas.updateAll()
+			}
+		}
+
+		refreshGroupsProperties()
+		dialog.hide()
+	}
 
 	let form = form1;
 	if(isInternalModel(settings)) {
@@ -96,76 +143,45 @@ function click (ev: any) {
 		if (selected.boneType === "head")
 			form = form2;
 	}
+	form.boneType = {
+		...(form.boneType as DialogFormElement),
+		value: selected.boneType || 'normal',
+	}
+	if(selected.boneType === "head") {
+		form.maxHeadRotX = {
+			...(form.maxHeadRotX as DialogFormElement),
+			value: selected.maxHeadRotX ? selected.maxHeadRotX : 40,
+		}
+		form.maxHeadRotY = {
+			...(form.maxHeadRotY as DialogFormElement),
+			value: selected.maxHeadRotY ? selected.maxHeadRotY : 75,
+		}
+	}
+
 	const dialog = new Dialog({
 		title: tl('iaentitymodel.dialogs.boneConfig.title'),
 		id: 'boneConfig',
 		form: form,
 		onConfirm: (formData: any) => {
-			console.log(formData)
-			selected.boneType = formData.boneType
-
-			if(selected.boneType === "head") {
-				selected.maxHeadRotX = formData.maxHeadRotX
-				selected.maxHeadRotY = formData.maxHeadRotY
-				
-				// Apply this change to every other head bone
-				for(const group of Group.all as AJGroup[]) {
-					if(group.boneType === "head") {
-						if(selected.name === group.name)
-							continue
-						else {
-							group.maxHeadRotX = formData.maxHeadRotX
-							group.maxHeadRotY = formData.maxHeadRotY
-						}
-					}
-				}
-			} else {
-				selected.maxHeadRotX = undefined
-				selected.maxHeadRotY = undefined
+			const selectedCubes = selected.children.filter((child) => child instanceof Cube)
+			if(formData.boneType === "hitbox" && selectedCubes.length > 1) {
+				Blockbench.showMessageBox({
+					message: 'Sei sicuro? il bone ha poiu di un cubo, tutte le texture verrano rimosse',
+					icon: 'warning',
+					width: 420,
+					buttons: ['OK', 'Cancel'],
+					confirm: 0,
+					cancel: 1,
+				}, (result) => {
+					if(result === 0) applyBoneConfig(formData, dialog)
+				})
+				return
 			}
 
-			// If hitbox, set texture to completely transparent
-			if (selected.boneType === "hitbox") {
-				for (const group of Group.all as AJGroup[]) {
-					if (group.boneType === "hitbox") {
-						if (selected.name === group.name) {
-							selected.children.forEach((child) => {
-								if (child instanceof Cube) {
-									let cube = child as Cube
-									// @ts-ignore
-									for (const key of Object.keys(cube.faces)) {
-										// @ts-ignore
-										const face = cube.faces[key];
-										face.texture = null; // To make it transparent
-									}
-								}
-							});
-						}
-					}
-
-					// To force updating the textures which I just made transparent
-					Canvas.updateAll()
-				}
-			}
-
-			refreshGroupsProperties()
-			dialog.hide()
-		},
-		onFormChange: (formData: any) => {
-			// To refresh the dialog buttons, very hacky.
-			dialog.confirm()
-			click(null)
+			applyBoneConfig(formData, dialog)
 		}
 	}).show()
-	
-	if(selected.boneType) {
-		document.querySelector('#' + selected.boneType)["checked"] = true
-	}
 
-	if(selected.boneType === "head") {
-		document.querySelector('#maxHeadRotX')["value"] = selected.maxHeadRotX ? selected.maxHeadRotX : 40
-		document.querySelector('#maxHeadRotY')["value"] = selected.maxHeadRotY ? selected.maxHeadRotY : 75
-	}
 }
 
 // Properties registration to make Blockbench save them in the project file
@@ -189,3 +205,5 @@ new Property(Group, 'number', 'maxHeadRotY', {
 Group.prototype.menu.structure.splice(3, 0, openBoneConfig)
 // @ts-ignore
 openBoneConfig.menus.push({ menu: Group.prototype.menu, path: '' })
+// @ts-ignore
+openBoneConfig.pushToolbar(Toolbars.outliner, 2)

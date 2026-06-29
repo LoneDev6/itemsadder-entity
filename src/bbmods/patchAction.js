@@ -14,9 +14,11 @@ if(!animatedJavaPlugin) {
 			saveTextures(true)
 			if (isApp && Project.save_path) {
 				codec.write(codec.compile(), Project.save_path)
+				Project.saved = true
 			} else {
 				codec.export()
 				Project.save_path = Project.export_path
+				Project.saved = true
 			}
 		},
 	}
@@ -29,6 +31,7 @@ if(!animatedJavaPlugin) {
 		click: function () {
 			saveTextures(true)
 			codec.export()
+			Project.saved = true
 		},
 	}
 
