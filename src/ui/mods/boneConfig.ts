@@ -1,8 +1,12 @@
 import { CustomAction } from '../../util/customAction'
 import { tl } from '../../util/intl'
-import {isInternalModel, refreshGroupsProperties} from '../../util/utilz'
+import {isInternalElement, isInternalModel, refreshGroupsProperties} from '../../util/utilz'
 import { isCustomFormat } from '../../modelFormat'
 import { settings } from '../../settings'
+import { normalizeHeadBoneCubes } from './headBoneChildren'
+
+let registered = false
+let openBoneConfig: Action
 
 export type AJGroup = {
 	nbt: string
@@ -70,19 +74,12 @@ const form2 = {
 	},
 } as { [formElement: string]: '_' | DialogFormElement }
 
-const openBoneConfig = CustomAction('iaentitymodel.BoneConfig', {
-	name: 'Bone Config',
-	icon: 'fas.fa-bone',
-	category: 'edit',
-	condition: () => isCustomFormat() && ((Group.selected as any) || []).length > 0,
-	click: click,
-})
-
 function click (ev: any) {
 	console.log('Opened bone config')
 	// Fucking BlockBench 5.0+ change that makes Group.selected an array
 	const selected = (Group.selected as any)[0] as AJGroup
 	if (!selected) return
+	if (isInternalModel(settings) && isInternalElement(selected.name)) return
 
 	function applyBoneConfig(formData: any, dialog: Dialog) {
 		console.log(formData)
@@ -91,6 +88,7 @@ function click (ev: any) {
 		if(selected.boneType === "head") {
 			selected.maxHeadRotX = formData.maxHeadRotX ?? 40
 			selected.maxHeadRotY = formData.maxHeadRotY ?? 75
+			normalizeHeadBoneCubes(selected)
 			
 			// Apply this change to every other head bone
 			for(const group of Group.all as AJGroup[]) {
@@ -166,7 +164,7 @@ function click (ev: any) {
 			const selectedCubes = selected.children.filter((child) => child instanceof Cube)
 			if(formData.boneType === "hitbox" && selectedCubes.length > 1) {
 				Blockbench.showMessageBox({
-					message: 'Sei sicuro? il bone ha poiu di un cubo, tutte le texture verrano rimosse',
+					message: tl('iaentitymodel.dialogs.boneConfig.hitboxMultiCubeWarning'),
 					icon: 'warning',
 					width: 420,
 					buttons: ['OK', 'Cancel'],
@@ -184,26 +182,42 @@ function click (ev: any) {
 
 }
 
-// Properties registration to make Blockbench save them in the project file
-new Property(Group, 'string', 'boneType', {
-	default: () => '',
-	exposed: true,
-	condition: (val: any) => val !== undefined && val !== "" && val !== "normal"
-})
-new Property(Group, 'number', 'maxHeadRotX', {
-	default: () => undefined,
-	exposed: true,
-	condition: (val: any) => val !== undefined && val !== ""
-})
-new Property(Group, 'number', 'maxHeadRotY', {
-	default: () => undefined,
-	exposed: true,
-	condition: (val: any) => val !== undefined && val !== ""
-})
+export function registerBoneConfigMod() {
+	if (registered) return
+	registered = true
 
-// @ts-ignore
-Group.prototype.menu.structure.splice(3, 0, openBoneConfig)
-// @ts-ignore
-openBoneConfig.menus.push({ menu: Group.prototype.menu, path: '' })
-// @ts-ignore
-openBoneConfig.pushToolbar(Toolbars.outliner, 2)
+	openBoneConfig = CustomAction('iaentitymodel.BoneConfig', {
+		name: 'Bone Config',
+		icon: 'fas.fa-bone',
+		category: 'edit',
+		condition: () => {
+			const selected = (Group.selected as any)?.[0]
+			return isCustomFormat() && !!selected && !(isInternalModel(settings) && isInternalElement(selected.name))
+		},
+		click: click,
+	})
+
+	// Properties registration to make Blockbench save them in the project file
+	new Property(Group, 'string', 'boneType', {
+		default: () => '',
+		exposed: true,
+		condition: (val: any) => val !== undefined && val !== "" && val !== "normal"
+	})
+	new Property(Group, 'number', 'maxHeadRotX', {
+		default: () => undefined,
+		exposed: true,
+		condition: (val: any) => val !== undefined && val !== ""
+	})
+	new Property(Group, 'number', 'maxHeadRotY', {
+		default: () => undefined,
+		exposed: true,
+		condition: (val: any) => val !== undefined && val !== ""
+	})
+
+	// @ts-ignore
+	Group.prototype.menu.structure.splice(3, 0, openBoneConfig)
+	// @ts-ignore
+	openBoneConfig.menus.push({ menu: Group.prototype.menu, path: '' })
+	// @ts-ignore
+	openBoneConfig.pushToolbar(Toolbars.outliner, 2)
+}

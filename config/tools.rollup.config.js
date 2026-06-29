@@ -2,6 +2,13 @@ import resolve from '@rollup/plugin-node-resolve'
 import babel from 'rollup-plugin-babel'
 export default [
 	{
+		input: 'tools/syncVersion.js',
+		output: {
+			file: 'dist/tools/syncVersion.js',
+			format: 'cjs',
+		},
+	},
+	{
 		input: 'tools/scripts/watch.js',
 		output: {
 			file: 'dist/tools/scripts/watch.js',

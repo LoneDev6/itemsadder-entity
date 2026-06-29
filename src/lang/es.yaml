@@ -1,2 +1,449 @@
-# please copy the contents of en.yaml to this file before you translate it.
-delete: me #this is required for a successful build
+iaentitymodel:
+  plugin:
+    title: Entidad de ItemsAdder
+
+  menubar:
+    dropdown: Entidad de ItemsAdder
+    settings: Configuración
+    export: Exportar modelo
+    about: Acerca de...
+
+  panels:
+    variants:
+      title: Variantes del modelo (no implementado)
+      addVariant:
+        title: Añadir variante
+        description: Añade una nueva variante al modelo
+      back: Atrás
+
+  popups:
+    exportCancelled: ¡Exportación cancelada!
+    exportInProgress: ¡Exportación en curso!
+    noExporterSelected: ¡No se ha seleccionado ningún exportador!
+    successfullyExported: ¡Exportación correcta!
+    projectNotSaved: ¡Guarda el proyecto antes de exportar!
+
+  progress:
+    animationRendering: Renderizando animaciones... %currents/%totals
+
+  settings:
+    header: Configuración de ItemsAdder Entity
+    isGlobal: '(Global)'
+    isOptional: '(Opcional)'
+
+    generic:
+      errors:
+        invalid: Si ves este mensaje, ItemsAdder Entity se ha roto. (Uh Oh)
+        emptyValue: El valor no puede estar vacío
+        mustBeBoolean: El valor debe ser booleano
+        mustBeString: El valor debe ser una cadena
+        missingFormatString: Falta la cadena de formato requerida %notFound en el valor
+        invalidEntityTag: El valor no es una etiqueta de entidad válida
+
+    playerAnimationsName:
+      errors:
+        invalidFunctionName: ¡El archivo de animaciones del jugador no es válido!
+
+    namespace:
+      title: Espacio de nombres de la entidad
+      description:
+      - El espacio de nombres de tu entidad.
+      errors:
+        invalidFunctionName: ¡El espacio de nombres de la entidad no es válido!
+
+    projectName:
+      title: ID de entidad
+      description:
+      - El ID único de tu entidad.
+      errors:
+        invalidFunctionName: ¡El ID de entidad no es válido!
+
+    modelScalingMode:
+      title: Modo de escalado del modelo
+      description:
+      - El tamaño máximo del modelo permite modelos de 7x7x7 bloques de ancho, pero limita el escalado solo a reducir.
+      - El rango máximo de escalado permite reducir y aumentar hasta 3.125x de tamaño, pero limita el tamaño máximo del modelo a bloques de 3x3x3
+      options:
+        3x3x3: Escalado máximo
+        7x7x7: Tamaño máximo del modelo
+
+    verbose:
+      title: Verboso
+      description:
+      - Indica al exportador seleccionado si debe exportar mensajes adicionales de depuración/error.
+      - En realidad solo afecta a los exportadores de estatua y animación.
+
+    transparentTexturePath:
+      title: Ruta de textura transparente
+      description:
+      - Una textura transparente para añadir transparencia a las variantes. Solo es necesaria si usas transparencia en tus variantes.
+      errors:
+        undefinedWhenNeeded: ¡La ruta debe estar definida si usas la función de transparencia de las variantes!
+
+    useCache:
+      title: Usar caché de animación
+      description:
+      - Solo vuelve a renderizar las animaciones modificadas
+
+    addsAdditionalModels:
+      title: Permitir modelos adicionales en la animación del jugador
+      description:
+      - Activa esto si has añadido nuevos huesos/modelos a la escena (por ejemplo, accesorios, otras entidades, objetos...)
+
+    cacheMode:
+      title: Modo de caché de animación
+      description:
+      - La caché de animación nos permite volver a renderizar solo las animaciones que han cambiado desde la última exportación. Hace que las exportaciones repetidas sean mucho más rápidas, especialmente en modelos grandes.
+      - "- El modo memoria es más rápido, pero usa más memoria para almacenar la caché."
+      - "- El modo disco es más lento, pero guarda la caché en disco para ahorrar uso de memoria."
+      options:
+        memory: Modo memoria
+        disk: Modo disco
+
+    rotationMode:
+      title: Modo de rotación
+      description:
+      - "ItemsAdder ofrece dos modos de rotación de huesos."
+      - "Tienes que decidirlos según lo que hará tu entidad:"
+      - " - Suave: adecuado para NPCs y entidades que no caminarán muy rápido y con pocos huesos."
+      - " - Preciso: adecuado para mobs con muchos huesos y/o que se mueven muy rápido (ejemplo: correr, saltar, volar, jefes con ataques complejos y similares)."
+      options:
+        smooth: Suave
+        precise: Preciso
+
+    boundingBoxRenderMode:
+      title: Caja límite de tamaño de hueso
+      description:
+      - "Configura o desactiva la(s) caja(s) de límite de tamaño de hueso."
+      - "- Única mostrará solo una caja a la vez."
+      - "- Múltiple mostrará una caja por cada hueso que hayas seleccionado."
+      - "- Desactivado la desactivará por completo."
+      options:
+        single: Única
+        many: Múltiple
+        none: Desactivado
+
+    idleAnim:
+      title: Animación inactiva
+      description:
+      - Nombre de la animación inactiva
+
+    walkAnim:
+      title: Animación de caminar
+      description:
+      - Nombre de la animación de caminar
+
+    attackAnim:
+      title: Animación de ataque
+      description:
+      - Nombre de la animación de ataque
+
+    deathAnim:
+      title: Animación de muerte
+      description:
+      - Nombre de la animación de muerte
+
+    flyAnim:
+      title: Animación de vuelo
+      description:
+      - Nombre de la animación de vuelo
+
+    invalidAnim: Nombre de animación no válido
+
+  menu:
+    animation:
+      animType:
+        title: "Tipo de animación"
+        value:
+          other: "Otra"
+          idle: "Inactiva"
+          walk: "Caminar"
+          attack: "Ataque"
+          death: "Muerte"
+          fly: "Volar"
+
+  dialogs:
+    boneConfig:
+      title: Configuración de hueso
+      boneNbt: NBT del hueso
+      boneType: Tipo de hueso
+      head: Cabeza
+      normal: Hueso genérico
+      leftHandPivot: Pivote de la mano izquierda
+      rightHandPivot: Pivote de la mano derecha
+      hatPivot: Pivote del sombrero
+      mount: Montura (usada como ubicación del asiento)
+      locator: Localizador (usado para la ubicación de efectos)
+      hitbox: Hitbox (área que puede ser atacada/interactuada)
+      hitboxMultiCubeWarning: ¿Seguro? Este hueso tiene más de un cubo. Se eliminarán todas las texturas.
+      headProperties: "Propiedades de la cabeza"
+      maxHeadRotY: "Ángulo Y máximo de la cabeza"
+      maxHeadRotX: "Ángulo X máximo de la cabeza"
+    variants:
+      title: Variantes del modelo
+      description:
+      - Las variantes permiten que tu modelo tenga diferentes "skins" que pueden intercambiarse en tiempo de ejecución usando una función.
+
+    about:
+      title: Acerca de ItemsAdder Entity
+      description:
+      - Una herramienta para que los administradores de servidores creen animaciones fluidas y detalladas para ItemsAdder (plugin de Spigot para Minecraft Java Edition)
+
+      version: Versión
+      buildID: ID de compilación
+
+      creators: Creadores
+      discordServer: ¡Únete a mi servidor de Discord!
+      githubRepo: Código fuente
+      developers: Desarrolladores
+      originalDevelopers: Desarrolladores originales de Animated Java
+      originalPluginInfo: Información del plugin original Animated Java
+      patrons: Patrocinadores
+      honourableMentions: Menciones honoríficas
+
+      fetchbotQuote: '"¡Que los mobs de java también bailen!"'
+      snavesutitQuote: '"armor_stand es amor, armor_stand es vida."'
+
+      youtuber: Youtuber
+      translator: Traductor
+      contributor: Colaborador
+      moderator: Moderador de Discord
+      closedBeta: Tester de beta cerrada
+      brandingArtist: Artista de marca
+      patronTier1: Patrocinador de nivel 1
+      patronTier2: Patrocinador de nivel 2
+      patronTier3: Patrocinador de nivel 3
+
+    animationProperties:
+      animationCompleteCommand:
+        label: Comando de fin de animación
+
+    errors:
+      misc:
+        title: Se ha producido un error desconocido en ItemsAdder Entity
+        body:
+        - |-
+          <textarea style="height: 256px" readonly="readonly">
+          ------ Error ------
+          %errorMessage  //  "%randomErrorMessage"
+          ------ Traza ------
+          %errorStack
+
+          ID de compilación: %buildID
+          </textarea>
+        - <p>Informa de este error en el <a href="%githubLink">GitHub de ItemsAdder Entity</a> con información sobre cómo reproducirlo y una copia del error anterior.</p>
+        - <p>También puedes unirte a nuestro <a href="%discordLink">servidor de Discord</a> y hacer preguntas en el canal animated-java-support.</p>
+        - <p>¡Gracias!</p>
+
+      scaleOutOfBounds:
+        title: Escala fuera de los límites
+        body:
+        - "El hueso '%boneName' tiene un escalado no válido durante una de tus animaciones:"
+        - "%displayString"
+
+      topLevelCubes:
+        title: El modelo tiene cubos de nivel superior
+        body:
+        - Todos los cubos deben estar dentro de un grupo.
+
+      predicateMergeFailed:
+        title: No se pudo combinar el predicado
+        body:
+        - "%reason"
+        - ItemsAdder Entity solo admite la combinación con modelos de predicado controlados por ItemsAdder Entity.
+        - Asegúrate de que intentas combinar tu modelo de objeto de predicado con un modelo de objeto de predicado preexistente válido de ItemsAdder Entity.
+        reasons:
+          overridesMissing: Falta la lista de sobrescrituras del modelo.
+          ajMetaMissing: El archivo de modelo con el que se va a combinar no es un archivo de predicado de ItemsAdder Entity.
+
+      invalidAnimationSnappingValue:
+        title: Valor de ajuste de animación no válido
+        body:
+        - ¡La animación '%animationName' tiene un valor de ajuste de %snapping!
+        - Debido a la velocidad de los ticks de Minecraft, ItemsAdder Entity solo admite un valor de ajuste de 20.
+        - Actualiza tus animaciones y fotogramas clave para reflejar esta limitación antes de exportar.
+        - (Puede que tengas que mover un poco tus fotogramas clave en la línea de tiempo para actualizar su tiempo ajustado)
+
+      rigFolderHasUnknownContent:
+        title: Carpeta de rig sin usar
+        body:
+        - La carpeta que has elegido como carpeta de modelo del rig contiene archivos desconocidos.
+        - ¿Seguro que quieres sobrescribir el contenido de esta carpeta con tu rig?
+        - "Carpeta elegida:"
+        - <textarea>%path</textarea>
+        - "Archivos desconocidos:"
+        - <textarea>%files</textarea>
+
+      rigFolderAlreadyUsedByOther:
+        title: La carpeta de modelo del rig elegida ya está en uso
+        body:
+        - La carpeta que has elegido como carpeta de modelo del rig ya contiene modelos de un rig diferente.
+        - ¿Seguro que quieres sobrescribir el contenido de esta carpeta con tu rig?
+        - "Carpeta elegida:"
+        - <textarea>%path</textarea>
+        - "Archivos:"
+        - <textarea>%files</textarea>
+
+      unableToGenerateTexturePath:
+        title: Ruta de textura no válida
+        body:
+        - La textura '%textureName' tiene una ubicación no válida dentro de un Resource Pack
+        - Asegúrate de que esté guardada correctamente dentro de un Resource Pack válido en una subcarpeta de 'assets/namespace/textures/'
+        - ej. 'resources/assets/minecraft/textures/item/diamond.png'
+
+      unableToGenerateModelPath:
+        title: Ruta de modelo no válida
+        body:
+        - El modelo '%modelName' tiene una ubicación no válida dentro de un Resource Pack
+        - Asegúrate de que esté guardado correctamente dentro de un Resource Pack válido en una subcarpeta de 'assets/namespace/models/'
+        - ej. 'resources/assets/minecraft/models/item/diamond.json'
+
+      invalidCubeRotations:
+        title: Rotaciones de elemento no válidas
+        body:
+        - Las rotaciones de algunos cubos no son válidas para el formato de modelo de Java.
+        - Corrige todas las rotaciones no válidas antes de exportar.
+
+      unsavedTexture:
+        title: Textura sin guardar
+        body:
+        - ¡La textura '%textureName' no está guardada en disco!
+        - Asegúrate de que esté guardada en una ubicación válida de resource pack.
+
+      transparentTexturePathNotFound:
+        title: Ruta de textura transparente no definida
+        body:
+        - ¡Parece que intentas usar variantes con texturas transparentes sin definir una ruta de textura!
+        - Debes configurar la ruta de textura transparente en la configuración antes de poder exportar.
+
+      rigModelsExportFolderUndefined:
+        title: Carpeta de modelos del rig no definida
+        body:
+        - Debes definir una ruta de carpeta de modelos del rig en la configuración antes de poder exportar.
+
+  exporters:
+    #? Cadenas genéricas del exportador
+    generic:
+      progress:
+        writingDataPack: Escribiendo Data Pack en disco... %progress% | Escribiendo %fileName
+        exportingDataPack: Generando Data Pack... %progress%
+
+      settings:
+        rootEntityType:
+          title: Tipo de entidad raíz
+          description:
+          - El tipo de entidad que se usará como entidad raíz del modelo
+          errors:
+            invalidEntity: ¡La entidad elegida no existe!
+
+        rootEntityNbt:
+          title: NBT de entidad raíz
+          description:
+          - Los datos NBT de la entidad raíz
+          errors:
+            invalidNbt: ¡NBT no válido!
+
+        markerArmorStands:
+          title: Armor stands marcadores
+          description:
+          - Cuando está activado, todos los armor_stands usados para mostrar el rig no tendrán hitbox ni colisión.
+
+        modelTag:
+          title: Etiqueta del modelo
+          description:
+          - La etiqueta usada para seleccionar el modelo
+
+        rootTag:
+          title: Etiqueta raíz
+          description:
+          - La etiqueta usada para seleccionar la entidad raíz de la estatua
+
+        allBonesTag:
+          title: Etiqueta de todos los huesos
+          description:
+          - La etiqueta usada para seleccionar cualquiera o todos los huesos de la estatua
+
+        boneModelDisplayTag:
+          title: Etiqueta de visualización del modelo del hueso
+          description:
+          - La etiqueta usada para seleccionar las entidades de visualización del modelo (armor_stands con objetos en la cabeza)
+
+        individualBoneTag:
+          title: Etiqueta de hueso individual
+          description:
+          - La etiqueta usada para seleccionar un hueso específico por nombre
+
+        internalScoreboardObjective:
+          title: Scoreboard interno
+          description:
+          - El nombre del objetivo de scoreboard usado para cálculos internos
+
+        idScoreboardObjective:
+          title: Scoreboard de ID de modelo
+          description:
+          - El nombre del objetivo de scoreboard usado para identificar qué entidades pertenecen a qué instancia de modelo
+
+        exportMode:
+          title: Modo de exportación
+          description:
+          - Qué tipo de formato exportar. Vanilla exportará un Data Pack y Resource Pack normales.
+          - MCB exportará un Resource Pack y un archivo .mc para el compilador lang-mc
+          options:
+            mcb: MCB
+            vanilla: Vanilla
+
+        itemsadderItemConfig:
+          title: Archivo lang-mc
+          description:
+          - La ruta a la que exportar el archivo .mc
+          - Tendrás que instalar mc-extra en tu espacio de trabajo MCB para construir el data pack exportado
+
+        mcbConfigPath:
+          title: Ruta de config.json de lang-mc
+          description:
+          - Exporta la configuración MCB predeterminada para ItemsAdder Entity
+          - ¡ADVERTENCIA! Sobrescribirá config.json existente
+          errors:
+            mustBeNamedAfterProject: ¡La ruta debe terminar en un archivo llamado %projectName.mc!
+
+    #? Exportador de estatua Vanilla
+    vanillaStatue:
+      title: Exportador de estatua
+
+    #? Exportador de animación Vanilla
+    vanillaAnimation:
+      title: Exportador de animación
+      dialogs:
+        errors:
+          zeroLengthAnimation:
+            title: Animación de duración cero
+            body:
+            - ¡La animación %animationName es demasiado corta! Las animaciones deben durar al menos 0.05 segundos (o 1 tick de juego)
+
+          noAnimations:
+            title: Sin animaciones
+            body:
+            - ¡No has creado ninguna animación!
+            - Tendrás que crear algunas animaciones en la pestaña de animación antes de poder exportar usando el exportador de animaciones.
+          markerNoLoopAnim:
+            message: Esta animación "Loop Mode" no está configurada como "Loop". Cambia el valor a "Loop" antes de establecer marcadores.
+          tooManyMarkers:
+            message: ¡Esta animación ya contiene 2 marcadores "Loop Start/End"! Haz clic derecho en ellos para eliminarlos si es necesario.
+      settings:
+        frameScoreboardObjective:
+          title: Scoreboard de fotogramas
+          description:
+          - El nombre del objetivo de scoreboard usado para rastrear qué fotograma de una animación debe reproducirse a continuación
+
+        animatingFlagScoreboardObjective:
+          title: Scoreboard de indicador de animación
+          description:
+          - El nombre del objetivo de scoreboard usado para consultar si un rig se está animando activamente
+
+        animationLoopModeScoreboardObjective:
+          title: Scoreboard de modo de bucle de animación
+          description:
+          - El nombre del objetivo de scoreboard usado para controlar el comportamiento de bucle de cada animación
+      other:
+        addLoopMarker: Añadir marcador de inicio/fin de bucle
+        toggleLoopMarkers: Establecer/quitar marcadores de inicio/fin de bucle

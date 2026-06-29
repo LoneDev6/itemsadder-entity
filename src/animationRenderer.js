@@ -13,6 +13,13 @@ import { format, safeFunctionName } from './util/replace'
 import { isSceneBased } from './util/hasSceneAsParent'
 import {Euler} from "three";
 import {isInternalModel, needsToExportJsonsModels} from "./util/utilz";
+import {
+	ANIMATION_POSITION_ROUNDING,
+	EXTERNAL_HAND_PIVOT_OFFSET,
+	EXTERNAL_HAT_PIVOT_OFFSET,
+	INTERNAL_PLAYER_PIVOT_OFFSET,
+	MINECRAFT_MODEL_UNIT,
+} from './constants/compat'
 store.set('staticAnimationUuid', '138747e7-2de0-4130-b900-9275ca0e6333')
 
 function setAnimatorTime(time) {
@@ -68,31 +75,31 @@ function getPositions() {
 		let prevPos = group.mesh.position.clone();
 		if(group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot" || group.boneType === "hatPivot") {
 			if (isInternalModel(settings)) {
-				group.mesh.position.x -= 1
-				group.mesh.position.y += 10
-				group.mesh.position.z += 0.5
+				group.mesh.position.x += INTERNAL_PLAYER_PIVOT_OFFSET.x
+				group.mesh.position.y += INTERNAL_PLAYER_PIVOT_OFFSET.y
+				group.mesh.position.z += INTERNAL_PLAYER_PIVOT_OFFSET.z
 			} else {
 				if (group.boneType === "rightHandPivot") {
-					group.mesh.position.x -= 1.2
-					group.mesh.position.y += 10
-					group.mesh.position.z += 0.5
+					group.mesh.position.x += EXTERNAL_HAND_PIVOT_OFFSET.x
+					group.mesh.position.y += EXTERNAL_HAND_PIVOT_OFFSET.y
+					group.mesh.position.z += EXTERNAL_HAND_PIVOT_OFFSET.z
 				} else if (group.boneType === "leftHandPivot") {
-					group.mesh.position.x -= 1.2
-					group.mesh.position.y += 10
-					group.mesh.position.z += 0.5
+					group.mesh.position.x += EXTERNAL_HAND_PIVOT_OFFSET.x
+					group.mesh.position.y += EXTERNAL_HAND_PIVOT_OFFSET.y
+					group.mesh.position.z += EXTERNAL_HAND_PIVOT_OFFSET.z
 				}
 
 				if (group.boneType === "hatPivot") {
-					group.mesh.position.y -= 8
-					group.mesh.position.z -= 4
+					group.mesh.position.y += EXTERNAL_HAT_PIVOT_OFFSET.y
+					group.mesh.position.z += EXTERNAL_HAT_PIVOT_OFFSET.z
 				}
 			}
 		}
 		
 		let pos = group.mesh.getWorldPosition(new THREE.Vector3())
-		pos.x = roundToN(pos.x / 16, 100000)
-		pos.y = roundToN(pos.y / 16, 100000)
-		pos.z = roundToN(pos.z / 16, 100000)
+		pos.x = roundToN(pos.x / MINECRAFT_MODEL_UNIT, ANIMATION_POSITION_ROUNDING)
+		pos.y = roundToN(pos.y / MINECRAFT_MODEL_UNIT, ANIMATION_POSITION_ROUNDING)
+		pos.z = roundToN(pos.z / MINECRAFT_MODEL_UNIT, ANIMATION_POSITION_ROUNDING)
 		result[group.name] = pos
 
 		group.mesh.position = prevPos
@@ -295,7 +302,7 @@ async function renderAnimation(options) {
 				!isSceneBased(group) &&
 				group.visibility &&
 				(
-					group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot" || group.boneType === "hatPivot" || group.boneType === "mount" || group.boneType === "locator" || group.boneType === "hitbox" ||
+					group.boneType === "head" || group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot" || group.boneType === "hatPivot" || group.boneType === "mount" || group.boneType === "locator" || group.boneType === "hitbox" ||
 					group.children.find((child) => child instanceof Cube)
 				)
 		)

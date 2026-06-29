@@ -13,12 +13,27 @@ let forceUpdateSettingsUi = () => {
 const RenderTemplates = {
 	checkbox({ value, setValue, namespace, name, children, forceRerender }) {
 		return (
-			<>
-				<div className="setting_element">
+			<div
+				style={{
+					display: 'flex',
+					alignItems: 'flex-start',
+					gap: '1em',
+					width: '100%',
+				}}
+			>
+				<div
+					className="setting_element"
+					style={{
+						position: 'static',
+						flex: '0 0 auto',
+						width: 'auto',
+						marginTop: 0,
+					}}
+				>
 					<input
 						type={'checkbox'}
 						id={`aj.setting.${namespace}.${name}`}
-						checked={value}
+						checked={!!value}
 						onChange={(e) => {
 							try {
 								settings[namespace][name] = e.target.checked
@@ -28,8 +43,8 @@ const RenderTemplates = {
 						}}
 					/>
 				</div>
-				{children}
-			</>
+				<div style={{ flex: '1 1 auto', minWidth: 0 }}>{children}</div>
+			</div>
 		)
 	},
 	filepath({

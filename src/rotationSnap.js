@@ -1,6 +1,7 @@
 import EVENTS from './constants/events'
 import { format } from './modelFormat'
 import { bus } from './util/bus'
+import { clearInvalidCubeNotification } from './ui/notifications/invalidCube'
 
 import { settings } from './settings'
 import { isJavaCubeOutOfBoundsAdjustScale } from './modelComputation'
@@ -64,8 +65,7 @@ Blockbench.on('update_selection', () => {
 
 
 		if(prevCube != Cube.selected[0]) {
-			global.invalidCubeNotification?.delete();
-			delete global.invalidCubeNotification;
+			clearInvalidCubeNotification();
 		}
 
 		if(Cube.selected.length == 1) {

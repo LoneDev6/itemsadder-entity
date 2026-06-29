@@ -3,6 +3,13 @@ import { isCustomFormat, format as modelFormat } from '../../modelFormat'
 import {isInternalModel} from "../../util/utilz";
 import { settings } from '../../settings'
 import { CustomError } from '../../util/customError'
+import { isLoopMarker, LOOP_MARKER_COLOR, LOOP_MARKER_NAME } from '../../constants/loopMarkers'
+
+let registered = false
+
+export function registerAnimConfigMod() {
+	if (registered) return
+	registered = true
 
 // Properties registration to make Blockbench save them in the project file
 new Property(Animation, 'string', 'animType', {
@@ -89,13 +96,57 @@ Animation.prototype.menu.structure.splice(15, 0, '_')
 
 markerColors[-1] = {pastel: '#ffffff', standard: '#ffffff', name: 'loop_start_end'}
 
+
+function getLoopMarkers(animation) {
+	return animation?.markers?.filter(isLoopMarker) || []
+}
+
+function removeLoopMarkers(animation) {
+	for (let index = animation.markers.length - 1; index >= 0; index--) {
+		if (isLoopMarker(animation.markers[index])) {
+			animation.markers.splice(index, 1)
+		}
+	}
+}
+
 function getLoopStartEndMarkers(animation) {
-	const markers = animation?.markers
-		?.filter(marker => marker.color === -1)
+	const markers = getLoopMarkers(animation)
 		.sort((a, b) => a.time - b.time)
 
 	if (!markers || markers.length < 2 || markers[0].time === markers[1].time) return null
 	return [markers[0], markers[1]]
+}
+
+function redrawTimeline() {
+	const timeline = Timeline as any
+	timeline.vue?._data?.animation_length && (timeline.vue._data.animation_length = timeline.vue._data.animation_length)
+	timeline.vue?.$forceUpdate?.()
+}
+
+function toggleLoopMarkers() {
+	// @ts-ignore
+	const animation = Animation.selected
+	if (!animation) return
+
+	if (animation.loop !== 'loop') {
+		// @ts-ignore
+		Blockbench.showMessageBox({
+			message: tl('iaentitymodel.exporters.vanillaAnimation.dialogs.errors.markerNoLoopAnim.message'),
+			icon: 'error',
+		})
+		return
+	}
+
+	const loopMarkers = getLoopMarkers(animation)
+	if (loopMarkers.length >= 2) {
+		removeLoopMarkers(animation)
+	} else {
+		const startTime = Math.max(0, (Timeline as any).snapTime(Timeline.time))
+		const TimelineMarkerClass = (globalThis as any).TimelineMarker
+		animation.markers.push(new TimelineMarkerClass({time: startTime, color: LOOP_MARKER_COLOR, name: LOOP_MARKER_NAME}))
+	}
+	Project.saved = false
+	redrawTimeline()
 }
 
 let activePlaybackLoopMarkers = null
@@ -129,79 +180,15 @@ Timeline.loop = function () {
 	}
 }
 
-// @ts-ignore
-TimelineMarker.prototype.menu.structure.splice(1, 0, '_')
-// @ts-ignore
-TimelineMarker.prototype.menu.structure.splice(2, 0,
-	{icon: 'flag', color: "#000000", name: 'Loop Start/End', click(marker) {
-		// @ts-ignore
-		if(Animation.selected.loop === 'loop') {
-			marker.color = -1;
-		} else {
-			// @ts-ignore
-			Blockbench.showMessageBox({
-				message: tl('iaentitymodel.exporters.vanillaAnimation.dialogs.errors.markerNoLoopAnim.message'),
-				icon: 'error',
-			})
-		}
-	}, condition: isCustomFormat}
-)
-
-/*MenuBar.addAction(new Action('add_loop_marker', {
-	icon: 'clock-alert',
-	category: 'update',
-	condition: {modes: ['animate']},
-	click: function (event) {
-		let count = 0;
-		// @ts-ignore
-		Animation.selected?.markers.forEach(marker => {
-			if(marker.color === -1) {
-				count++;
-			}
-		})
-		if(count < 2) {
-			// @ts-ignore
-			Animation.selected?.markers.push(new TimelineMarker({time: Timeline.second, color: -1}))
-		} else {
-			// @ts-ignore
-			Blockbench.showMessageBox({
-				message: tl('iaentitymodel.exporters.vanillaAnimation.dialogs.errors.tooManyMarkers.message'),
-				icon: 'error',
-			})
-		}
-	}
-}), 'animation')*/
-
 new Action('add_loop_marker', {
-	name: tl("iaentitymodel.exporters.vanillaAnimation.other.addLoopMarker"),
+	name: tl("iaentitymodel.exporters.vanillaAnimation.other.toggleLoopMarkers"),
 	icon: 'update',
 	category: 'animation',
 	condition: () => {
 		// @ts-ignore
 		return isCustomFormat() && Mode.selected?.name === 'Animate' && Animation.selected?.loop === 'loop'
 	},
-	click: function (event) {
-		let count = 0;
-		// @ts-ignore
-		Animation.selected?.markers.forEach(marker => {
-			if(marker.color === -1) {
-				count++;
-			}
-		})
-		if(count < 2) {
-			// @ts-ignore
-			Animation.selected?.markers.push(new TimelineMarker({time: Timeline.second, color: -1}))
-		} else {
-			// This should not happen because I already hide this button of non-loop animations
-			// @ts-ignore
-			/*Blockbench.showMessageBox({
-				message: tl('iaentitymodel.exporters.vanillaAnimation.dialogs.errors.tooManyMarkers.message'),
-				icon: 'error',
-			})*/
-			// @ts-ignore
-			Animation.selected.markers.pop()
-		}
-	}
+	click: toggleLoopMarkers
 	// @ts-ignore
 }).pushToolbar(Toolbars.timeline, 1)
 
@@ -214,3 +201,4 @@ Blockbench.on('select_project', () => {
 		}
 	})
 })
+}

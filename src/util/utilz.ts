@@ -1,6 +1,7 @@
 import * as path from 'path'
 import * as fs from 'fs'
 import { normalizePath } from './misc';
+import { hasInternalPlayerSkeleton, INTERNAL_PLAYER_BONE_NAME_SET } from '../constants/internalPlayer'
 
 export function isInternalModel(settings) {
     // @ts-ignore
@@ -17,15 +18,7 @@ export function isInternalPlayerModel(settings) {
 export function isPlayerModel(settings) {
     // @ts-ignore
     //return settings.iaentitymodel.namespace === "iainternal" && settings.iaentitymodel.projectName === "player" // TODO: make this better...
-    let res = false;
-    Group.all.forEach((group) => {
-		if(isInternalElement(group.name))
-        {
-            res = true;
-            return;
-        }
-	})
-    return res
+    return hasInternalPlayerSkeleton(Group.all)
 }
 
 export function needsToExportJsonsModels(settings) {
@@ -34,17 +27,7 @@ export function needsToExportJsonsModels(settings) {
 }
 
 export function isInternalElement(name) {
-    switch (name) {
-        case "parm_left_3":
-        case "parm_right_4":
-        case "pbody_2":
-        case "phead_0":
-        case "pleg_left_1":
-        case "pleg_right_5":
-        case "sus_6":
-            return true;
-    }
-    return false;
+    return INTERNAL_PLAYER_BONE_NAME_SET.has(name);
 }
 
 export function getCorrectInternalElementName(name) {
@@ -69,6 +52,14 @@ function shouldExportIntoAssets(projectRoot: string) {
     return fs.existsSync(path.join(projectRoot, 'assets'))
 }
 
+function getAssetsRootFolder(projectRoot: string) {
+    if (shouldExportIntoAssets(projectRoot)) {
+        return projectRoot
+    }
+
+    return path.join(projectRoot, 'resourcepack')
+}
+
 export function getModelExportFolder(settings) {
     const projectRoot = getProjectRootFolder()
     const folderParts = shouldExportIntoAssets(projectRoot)
@@ -82,6 +73,18 @@ export function getModelExportFolder(settings) {
         fs.mkdirSync(modelsPath, {recursive: true})
     //}
 
+    return modelsPath
+}
+
+export function getAdvancedPlayerModelExportFolder(settings) {
+    const projectRoot = getProjectRootFolder()
+    const assetsRoot = getAssetsRootFolder(projectRoot)
+    const folderParts = assetsRoot
+        ? [assetsRoot, "assets", settings.iaentitymodel.namespace, "models", "entity", settings.iaentitymodel.projectName]
+        : [projectRoot, "models", "entity", settings.iaentitymodel.projectName]
+
+    const modelsPath = normalizePath(path.join(...folderParts))
+    fs.mkdirSync(modelsPath, {recursive: true})
     return modelsPath
 }
 

@@ -19,12 +19,14 @@ class Intl {
 		this.lang = lang
 	}
 	tl(tlPath: string, raw?: boolean) {
-		if (Object.prototype.hasOwnProperty.call(Intl.translationCache, tlPath)) {
-			return Intl.translationCache[tlPath]
+		const cacheKey = `${this.lang}:${raw ? 'raw' : 'html'}:${tlPath}`
+		if (Object.prototype.hasOwnProperty.call(Intl.translationCache, cacheKey)) {
+			return Intl.translationCache[cacheKey]
 		}
 
 		let lang = this.dict[this.lang]
 		function recurse(_keyPath: string[], obj: object) {
+			if (!obj) return undefined
 			const key = _keyPath.pop()
 			if (Object.prototype.hasOwnProperty.call(obj, key)) {
 				const value = obj[key]
@@ -39,11 +41,13 @@ class Intl {
 						return recurse(_keyPath, value)
 				}
 			}
-			return tlPath
+			return undefined
 		}
-		if (!lang) return tlPath
-		const translatedString = recurse(tlPath.split('.').reverse(), lang)
-		Intl.translationCache[tlPath] = translatedString
+		const translatedString =
+			recurse(tlPath.split('.').reverse(), lang) ??
+			recurse(tlPath.split('.').reverse(), this.dict.en) ??
+			tlPath
+		Intl.translationCache[cacheKey] = translatedString
 		return translatedString
 	}
 	// tl(key: string) {

@@ -4,8 +4,14 @@ import { bus } from '../util/bus'
 import { CustomError } from '../util/customError'
 import {tl} from "../util/intl";
 
-const animatedJavaPlugin = Plugins.installed.find((x) => x.id === "animated_java")
-if(!animatedJavaPlugin) {
+let registered = false
+
+export function registerActionPatches() {
+	if (registered) return
+	registered = true
+
+	const animatedJavaPlugin = Plugins.installed.find((x) => x.id === "animated_java")
+	if(!animatedJavaPlugin) {
 	const save_aj_project = {
 		icon: 'save',
 		category: 'file',
@@ -31,7 +37,6 @@ if(!animatedJavaPlugin) {
 		click: function () {
 			saveTextures(true)
 			codec.export()
-			Project.saved = true
 		},
 	}
 
@@ -58,6 +63,7 @@ if(!animatedJavaPlugin) {
 	console.log(Action.prototype.trigger)
 
 	bus.on(events.LIFECYCLE.CLEANUP, () => {
+		registered = false
 		if (Action.prototype.patch) {
 			delete Action.prototype.patch
 			Action.prototype.trigger = Action.prototype._originalTrigger
@@ -104,4 +110,5 @@ if(!animatedJavaPlugin) {
 			}
 		)
 	).show()
+}
 }

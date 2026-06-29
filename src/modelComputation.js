@@ -4,6 +4,8 @@ import { store } from './util/store'
 import { tl } from './util/intl'
 import { size } from './util/misc'
 import * as resourcepack from './util/minecraft/resourcepack'
+import { BUILTIN_PLAYER_TEXTURE_UUID } from './constants/internalPlayer'
+import { showInvalidCubeNotification, clearInvalidCubeNotification } from './ui/notifications/invalidCube'
 import { settings } from './settings'
 import './overrides/overrides'
 import { CustomError } from './util/customError'
@@ -250,7 +252,7 @@ function getTexturesOnGroup(group) {
 		.forEach((cube) => {
 			for (const [faceName, face] of Object.entries(cube.faces)) {
 				// UUID of the builtin player texture, no need to export it.
-				if(face.texture === 'e10a3209-9ffd-9d01-d2d9-0dd09446ec62')
+				if(face.texture === BUILTIN_PLAYER_TEXTURE_UUID)
 					continue;
 
 				const texture = getTextureByUUID(face.texture)
@@ -330,7 +332,7 @@ async function computeModels(cubeData) {
 				}
 			} else {
 				// Check if it's a special bone and must be exported even if empty
-				if(group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot" || group.boneType === "hatPivot" || group.boneType === "mount" || group.boneType === "locator" || group.boneType === "hitbox") {
+				if(group.boneType === "head" || group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot" || group.boneType === "hatPivot" || group.boneType === "mount" || group.boneType === "locator" || group.boneType === "hitbox") {
 					const elements = []
 					elements.push({})
 					const modelName = safeFunctionName(group.name)
@@ -422,9 +424,9 @@ export function computeBones(models, animations) {
 
 	// Manually add also special bones, since they don't have any mesh inside
 	for (const group of Project.groups) {
-		if(group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot" || group.boneType === "hatPivot" || group.boneType === "mount" || group.boneType === "locator" || group.boneType === "hitbox") {
+		if(group.boneType === "head" || group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot" || group.boneType === "hatPivot" || group.boneType === "mount" || group.boneType === "locator" || group.boneType === "hitbox") {
 			console.log("Special bone: ", group)
-			bones[group.name] = group;
+			bones[safeFunctionName(group.name)] = group;
 		}
 	}
 
@@ -523,21 +525,16 @@ export function isJavaCubeOutOfBoundsAdjustScale(cube) {
 	if(isJavaCubeOutOfBounds(newTo) || isJavaCubeOutOfBounds(newFrom)) {
 		console.error(`A cube is out of java model bounds!`);
 
-		if(!global.invalidCubeNotification) {
-			global.invalidCubeNotification = Blockbench.showToastNotification({
-				text: `This cube is not valid, possible reasons:
+		showInvalidCubeNotification(`This cube is not valid, possible reasons:
 				- pivot of the cube or bone is in a location which makes the cube appear outside of the red box.
 				- cube is too large/long or the pivot of the cube or the bone itself is in a location which makes the cube appear outside of the red box.
 				
-				Move the pivot and/or reduce the size of the model until this message doens't appear anymore.`
-			})
-			if(global.visboxs.length > 0) {
-				global.visboxs[0].material = new THREE.LineBasicMaterial({ color: 0xff0000 })
-			}
+				Move the pivot and/or reduce the size of the model until this message doens't appear anymore.`)
+		if(global.visboxs.length > 0) {
+			global.visboxs[0].material = new THREE.LineBasicMaterial({ color: 0xff0000 })
 		}
 	} else {
-		global.invalidCubeNotification?.delete();
-		delete global.invalidCubeNotification;
+		clearInvalidCubeNotification();
 
 		if(global.visboxs.length > 0) {
 			global.visboxs[0].material = new THREE.LineBasicMaterial({ color: 0x1f6e18 })

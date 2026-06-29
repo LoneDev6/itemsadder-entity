@@ -8,6 +8,7 @@ import { getModelPath } from './util/minecraft/resourcepack'
 import { tl } from './util/intl'
 import {isPlayerModel, getModelExportFolder} from './util/utilz'
 import {format} from "./modelFormat";
+import { CustomError } from './util/customError'
 
 function genericEmptyErrorText() {
 	return tl('iaentitymodel.settings.generic.errors.emptyValue')
@@ -108,7 +109,9 @@ export const DefaultSettings = {
 				return tl('iaentitymodel.settings.addsAdditionalModels.description')
 			},
 			type: 'checkbox',
+			default: false,
 			onUpdate(d) {
+				d.setValue(d.value === true || d.value === 'true' || d.value === 1 || d.value === '1')
 				return d
 			},
 			isVisible(s) {
@@ -280,6 +283,9 @@ function createUpdateDescriptor(setting, value, event) {
 			throw new CustomError(
 				'The value property on an UpdateDescriptor is not writable'
 			)
+		},
+		setValue(v) {
+			value = v
 		},
 		isValid: true,
 		error: null,

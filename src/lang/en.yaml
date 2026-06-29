@@ -1,5 +1,3 @@
----
-#? AJ
 iaentitymodel:
   plugin:
     title: ItemsAdder Entity
@@ -177,6 +175,7 @@ iaentitymodel:
       mount: Mount (used as seat location)
       locator: Locator (used for effects location)
       hitbox: Hitbox (area which can be attacked/interacted)
+      hitboxMultiCubeWarning: Are you sure? This bone has more than one cube. All textures will be removed.
       headProperties: "Head properties"
       maxHeadRotY: "Max head Y angle"
       maxHeadRotX: "Max head X angle"
@@ -447,3 +446,4 @@ iaentitymodel:
           - The name of the scoreboard objective used to control the looping behaviour of each animation
       other:
         addLoopMarker: Add Loop Start/End marker
+        toggleLoopMarkers: Set/Remove Loop Start/End markers

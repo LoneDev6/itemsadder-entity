@@ -1,5 +1,8 @@
 import { load } from 'js-yaml'
 import { readFileSync } from 'fs'
+import { syncVersionFromPackage } from './syncVersion'
+
+syncVersionFromPackage()
 const env = load(readFileSync('./env.yaml', 'utf-8'))
 console.log(env)
 export default function (str, mergeEnv = {}) {

@@ -1,358 +1,449 @@
-
----
-#? AJ
 iaentitymodel:
   plugin:
-    title: アニメーテッド ジャバ
+    title: ItemsAdder Entity
 
   menubar:
-    dropdown: アニメーテッド ジャバ
+    dropdown: ItemsAdder Entity
     settings: 設定
     export: モデルをエクスポート
-    about: アニメーテッドジャバの事
+    about: 情報...
 
   panels:
     variants:
-      title: モデルバリアント
+      title: モデルバリアント（未実装）
       addVariant:
-        title: バリアントを足す
-        description: モデルに新しいバリアントを足す
+        title: バリアントを追加
+        description: モデルに新しいバリアントを追加します
       back: 戻る
 
   popups:
-    exportCancelled: エクスポートがキャンセルされました!
-    exportInProgress: エクスポート中!
-    noExporterSelected: エクスポーターを選んでください。
-    successfullyExported: エクスポートを出来ました!
+    exportCancelled: エクスポートがキャンセルされました！
+    exportInProgress: エクスポート中です！
+    noExporterSelected: エクスポーターが選択されていません！
+    successfullyExported: エクスポートに成功しました！
+    projectNotSaved: エクスポートする前にプロジェクトを保存してください！
 
   progress:
-    animationRendering: アニメーションをレンダー中... %currents/%totals
+    animationRendering: アニメーションをレンダリング中... %currents/%totals
 
   settings:
-    header: アニメーテッド ジャバ 設定
-    isGlobal: '(グローバル)'
-    isOptional: '(オプショナル)'
+    header: ItemsAdder Entity 設定
+    isGlobal: '（グローバル）'
+    isOptional: '（任意）'
 
     generic:
       errors:
-        invalid: このメッセージを見えるのはアニメーテッドジャバが壊れたと言うことです。（。＿。）
-        emptyValue: このヴァリューを入れるのは必要です
-        mustBeBoolean: このヴァリューがブーリアンであるのが必要です
-        mustBeString: このヴァリューがストリングであるのが必要です
-        missingFormatString: Value missing required %notFound formatting string
-        invalidEntityTag: このヴァリューはエンティティタグではありません。
+        invalid: このメッセージが表示されている場合、ItemsAdder Entity で問題が発生しています。（あらら）
+        emptyValue: 値を空にすることはできません
+        mustBeBoolean: 値はブール値である必要があります
+        mustBeString: 値は文字列である必要があります
+        missingFormatString: 必須のフォーマット文字列 %notFound が値にありません
+        invalidEntityTag: 値は有効なエンティティタグではありません
+
+    playerAnimationsName:
+      errors:
+        invalidFunctionName: プレイヤーアニメーションファイルが無効です！
+
+    namespace:
+      title: エンティティ名前空間
+      description:
+      - エンティティの名前空間です。
+      errors:
+        invalidFunctionName: エンティティ名前空間が無効です！
 
     projectName:
-      title: モデル名
+      title: エンティティ ID
       description:
-        - エンティティの一意のID。 必ずこれを設定してください！
+      - エンティティの一意の ID です。
       errors:
-        invalidFunctionName: エンティティ名が無効です！
+        invalidFunctionName: エンティティ ID が無効です！
 
-    exporter:
-      title: エクスポーター
+    modelScalingMode:
+      title: モデルスケーリングモード
       description:
-        - プロジェクトに使うエクスポーターのフォーマット
-      errors:
-        mustBeValidExporter: 選んだエクスポーターは登録されていません。
+      - 最大モデルサイズでは 7x7x7 ブロック幅のモデルを使用できますが、スケーリングは縮小のみに制限されます。
+      - 最大スケーリング範囲では最大 3.125 倍まで縮小と拡大が可能ですが、最大モデルサイズは 3x3x3 ブロックに制限されます
+      options:
+        3x3x3: 最大スケーリング
+        7x7x7: 最大モデルサイズ
 
     verbose:
-      title: ヴァーボス
+      title: 詳細出力
       description:
-        - 選んだエクスポーターでディバグ／エラーメッセージをエクスポートするかを示します。
-        - スタチューとアニメーションのエクスポーターだけに影響します。
+      - 追加のデバッグまたはエラーメッセージをエクスポートするかどうかを、選択したエクスポーターに示します。
+      - Statue エクスポーターと Animation エクスポーターにのみ実質的に影響します。
 
     transparentTexturePath:
-      title: 透明テクスチャーパス
+      title: 透明テクスチャパス
       description:
-        - バリアントに透明性を入れるためのテクスチャー。 バリアントで透明度を使っている場合にのみ必要です。
+      - バリアントに透明度を追加するための透明テクスチャです。バリアントで透明度を使用している場合にのみ必要です。
       errors:
-        undefinedWhenNeeded: 透明のテクスチャーの場所がセットされていません。　エクスポートする前に、透明のテクスチャーの場所を選ぶのが必要です。
+        undefinedWhenNeeded: バリアントの透明度機能を使用している場合は、パスを定義する必要があります！
 
     useCache:
-      title: アニメーションカッシュを使う
+      title: アニメーションキャッシュを使用
       description:
-        - 替えられたアニメーションだけレンダーする
+      - 変更されたアニメーションのみ再レンダリングします
 
+    addsAdditionalModels:
+      title: プレイヤーアニメーション内の追加モデルを許可
+      description:
+      - シーンに新しいボーンやモデルを追加した場合に有効にしてください（例：アクセサリ、他のエンティティ、アイテムなど）
 
     cacheMode:
-      title: アニメーションカッシュ　モード
+      title: アニメーションキャッシュモード
       description:
-        - アニメーションカッシュでは替えられたアニメーションだけレンダーする事が出来ます。　何回もエクスポートする前に早くて役に立ちます。
-        - "- メモリーモードはもっと早ですが、カッシュをストアするためにもっとメモリーを使います。"
-        - "- ディスクモードはもっと遅いですが、使われるメモリーを少なくするためにディスクにカッシュをセーブ出来ます。"
+      - アニメーションキャッシュを使用すると、最後のエクスポート以降に変更されたアニメーションのみを再レンダリングできます。特に大きなモデルでは、繰り返しのエクスポートが大幅に速くなります。
+      - "- メモリモードは高速ですが、キャッシュの保存により多くのメモリを使用します。"
+      - "- ディスクモードは低速ですが、メモリ使用量を抑えるためにキャッシュをディスクに保存します。"
       options:
-        memory: メモリー
-        disk: ディスク
+        memory: メモリモード
+        disk: ディスクモード
+
+    rotationMode:
+      title: 回転モード
+      description:
+      - "ItemsAdder には 2 種類のボーン回転モードがあります。"
+      - "エンティティの動作に応じて選択する必要があります:"
+      - " - スムーズ: あまり速く移動せず、ボーン数が少ない NPC やエンティティに適しています。"
+      - " - 正確: ボーン数が多い、または非常に速く動く Mob に適しています（例: 走る、ジャンプする、飛ぶ、複雑な攻撃を行うボスなど）。"
+      options:
+        smooth: スムーズ
+        precise: 正確
 
     boundingBoxRenderMode:
       title: ボーンサイズ制限ボックス
       description:
-        - "ボーンサイズ制限ボックスを変えるのか消すのを出来ます。"
-        - "- シングルはボックスを一個づつだけディスプレーします。"
-        - "- マルチプルはセレクトされているボーンに全部ボックスをディスプレーします。"
-        - "- ディセーブルは制限ボックスを完全に消します。"
+      - "ボーンサイズ制限ボックスを設定または無効化します。"
+      - "- 単一では、一度に 1 つのボックスのみ表示されます。"
+      - "- 複数では、選択した各ボーンにボックスが表示されます。"
+      - "- 無効では、完全に無効化されます。"
       options:
-        single: シングル
-        many: マルチプル
-        none: ディセーブル
+        single: 単一
+        many: 複数
+        none: 無効
+
+    idleAnim:
+      title: 待機アニメーション
+      description:
+      - 待機アニメーションの名前
+
+    walkAnim:
+      title: 歩行アニメーション
+      description:
+      - 歩行アニメーションの名前
+
+    attackAnim:
+      title: 攻撃アニメーション
+      description:
+      - 攻撃アニメーションの名前
+
+    deathAnim:
+      title: 死亡アニメーション
+      description:
+      - 死亡アニメーションの名前
+
+    flyAnim:
+      title: 飛行アニメーション
+      description:
+      - 飛行アニメーションの名前
+
+    invalidAnim: 無効なアニメーション名
+
+  menu:
+    animation:
+      animType:
+        title: "アニメーションタイプ"
+        value:
+          other: "その他"
+          idle: "待機"
+          walk: "歩行"
+          attack: "攻撃"
+          death: "死亡"
+          fly: "飛行"
 
   dialogs:
     boneConfig:
-      title: ボーンコンフィグ
+      title: ボーン設定
       boneNbt: ボーン NBT
-      head: Is Head
-
+      boneType: ボーンタイプ
+      head: 頭
+      normal: 汎用ボーン
+      leftHandPivot: 左手ピボット
+      rightHandPivot: 右手ピボット
+      hatPivot: 帽子ピボット
+      mount: マウント（座席位置として使用）
+      locator: ロケーター（エフェクト位置に使用）
+      hitbox: ヒットボックス（攻撃または操作可能な範囲）
+      hitboxMultiCubeWarning: よろしいですか？このボーンには複数のキューブがあります。すべてのテクスチャが削除されます。
+      headProperties: "頭のプロパティ"
+      maxHeadRotY: "頭の最大 Y 角度"
+      maxHeadRotX: "頭の最大 X 角度"
     variants:
       title: モデルバリアント
       description:
-        - バリアントでは色んな「スキン」を使えて、アニメーションの途中で帰られます。
+      - バリアントを使用すると、実行時に関数で切り替え可能な複数の「スキン」をモデルに持たせることができます。
 
     about:
-      title: アニメーテッドジャバの事
+      title: ItemsAdder Entity について
       description:
-        - マップメーカが綺麗で詳細なアニメーションをMinecraft Java Editionの為に作るツール。
+      - サーバー管理者が ItemsAdder（Minecraft Java Edition 用 Spigot プラグイン）向けに滑らかで詳細なアニメーションを作成するためのツール
 
-      version: Version
-      buildID: Build ID
+      version: バージョン
+      buildID: ビルド ID
 
-      creators: クリエイター
-      discordServer: ディスコードのサーバーに入って下さい！
+      creators: 制作者
+      discordServer: Discord サーバーに参加！
       githubRepo: ソース
-      developers: デヴェロパー
-      patrons: パトロン
-      honourableMentions: 佳作
+      developers: 開発者
+      originalDevelopers: 元の Animated Java 開発者
+      originalPluginInfo: 元の Animated Java プラグイン情報
+      patrons: 支援者
+      honourableMentions: 特別謝辞
 
-      fetchbotQuote: '"ジャバのモブにも踊らせてあげよう！"'
-      snavesutitQuote: '"armor_standはラブ、armor_standはライフ。"'
+      fetchbotQuote: '"Java の Mob も踊らせよう！"'
+      snavesutitQuote: '"armor_stand は愛、armor_stand は人生。"'
 
-      youtuber: ユーチューバー
-      translator: トランスレーター
-      contributor: 寄稿者
-      moderator: ディスコード　モデレーター
-      closedBeta: クローズド　ベータテスター
-      brandingArtist: ブランディング　アーティスト
-      patronTier1: ティア 1 パトロン
-      patronTier2: ティア 2 パトロン
-      patronTier3: ティア 3 パトロン
+      youtuber: YouTuber
+      translator: 翻訳者
+      contributor: 貢献者
+      moderator: Discord モデレーター
+      closedBeta: クローズドベータテスター
+      brandingArtist: ブランディングアーティスト
+      patronTier1: ティア 1 支援者
+      patronTier2: ティア 2 支援者
+      patronTier3: ティア 3 支援者
 
     animationProperties:
       animationCompleteCommand:
-        label: End Of Anim Command
+        label: アニメーション終了時コマンド
 
     errors:
       misc:
-        title: アニメーテッドジャバで不明なエラーが発生しました
+        title: ItemsAdder Entity で不明なエラーが発生しました
         body:
         - |-
           <textarea style="height: 256px" readonly="readonly">
-          ------ Error ------
+          ------ エラー ------
           %errorMessage  //  "%randomErrorMessage"
-          ------ Stack ------
+          ------ スタック ------
           %errorStack
 
-          Build ID: %buildID
+          ビルド ID: %buildID
           </textarea>
-        - <p>このエラーを<a href="%githubLink">アニメーテッドジャバのギットハブ</a>にこのエラーの作り方を教えて下さい。</p>
-        - <p>質問があれば、私たちの<a href="%discordLink">ディスコードサーバー</a>でanimated-java-supportチャンネルで聞いて下さい。</p>
+        - <p>このエラーを <a href="%githubLink">ItemsAdder Entity の GitHub</a> に報告してください。再現方法と上記エラーのコピーを添えてください。</p>
+        - <p><a href="%discordLink">Discord サーバー</a> に参加して、animated-java-support チャンネルで質問することもできます。</p>
         - <p>ありがとうございます！</p>
 
-      topLevelCubes:
-        title: モデルにトップレベルキューブがあります
+      scaleOutOfBounds:
+        title: スケールが範囲外です
         body:
-          - 全てキューブをグループの中に入れて下さい。
+        - "ボーン '%boneName' は、いずれかのアニメーション中に無効なスケーリングを行っています:"
+        - "%displayString"
+
+      topLevelCubes:
+        title: モデルにトップレベルのキューブがあります
+        body:
+        - すべてのキューブはグループ内にある必要があります。
 
       predicateMergeFailed:
-        title: プレディケットがマージするのを失敗しました。
+        title: Predicate のマージに失敗しました
         body:
-          - "%reason"
-          - アニメーテッドジャバはアニメーテッドジャバにコントロールされているプレディケットモデルしか使えません。
-          - 存在しているアニメーテッドジャバプレディケットアイテムにあなたのプレディケットアイテムをマージしているのを確認して下さい。
+        - "%reason"
+        - ItemsAdder Entity は、ItemsAdder Entity が制御する Predicate モデルへのマージのみをサポートしています。
+        - Predicate アイテムモデルを、有効な既存の ItemsAdder Entity Predicate アイテムモデルにマージしようとしていることを確認してください。
         reasons:
-          overridesMissing: モデルオーバーライトリストがありません。
-          ajMetaMissing: 選んだモデルファイルはアニメーテッドジャバプレディケットファイルではありません。
+          overridesMissing: モデルの overrides リストがありません。
+          ajMetaMissing: マージ先のモデルファイルは ItemsAdder Entity の Predicate ファイルではありません。
 
       invalidAnimationSnappingValue:
-        title: 無効なアニメーションスナッピングヴァリュー
+        title: 無効なアニメーションスナップ値
         body:
-          - "'%animationName'のアニメーションのスナッピングヴァリューが%snappingです!"
-          - マインクラフトのティックのスピードのせいでスナッピングヴァリューが20ではないと行けません。
-          - エクスポートする前にアニメーションのキーフレームをアップデートして下さい。
-          - (キーフレームを少し動かせるので治せるかもしれません)
+        - アニメーション '%animationName' のスナップ値は %snapping です！
+        - Minecraft の tick が高速なため、ItemsAdder Entity はスナップ値 20 のみをサポートしています。
+        - エクスポートする前に、この制限に合わせてアニメーションとキーフレームを更新してください。
+        - （スナップされた時間を更新するには、タイムライン上でキーフレームを少し動かす必要がある場合があります）
 
       rigFolderHasUnknownContent:
-        title: 使われていないリグのフォルダー
+        title: 未使用のリグフォルダー
         body:
-          - 選んだフォルダーには不明なファイルがあります。
-          - リグのためにフォルダーの中のファイルをオーバーライトしますか？
-          - "選んだフォルダー:"
-          - <textarea>%path</textarea>
-          - "不明なファイル:"
-          - <textarea>%files</textarea>
+        - リグモデルフォルダーとして選択したフォルダーに不明なファイルがあります。
+        - このフォルダーの内容をリグで上書きしてもよろしいですか？
+        - "選択したフォルダー:"
+        - <textarea>%path</textarea>
+        - "不明なファイル:"
+        - <textarea>%files</textarea>
 
       rigFolderAlreadyUsedByOther:
-        title: 選んだリグモデルのフォルダーは使われています
+        title: 選択したリグモデルフォルダーはすでに使用されています
         body:
-          - 選んだリグモデルのフォルダーは他のリグモデルがあります。
-          - 前のリグをオーバーライトするのでよろしいですか？
-          - "選んだフォルダー:"
-          - <textarea>%path</textarea>
-          - "ファイル:"
-          - <textarea>%files</textarea>
+        - リグモデルフォルダーとして選択したフォルダーには、すでに別のリグのモデルが含まれています。
+        - このフォルダーの内容をリグで上書きしてもよろしいですか？
+        - "選択したフォルダー:"
+        - <textarea>%path</textarea>
+        - "ファイル:"
+        - <textarea>%files</textarea>
 
       unableToGenerateTexturePath:
-        title: テクスチャーパス
+        title: 無効なテクスチャパス
         body:
-          - "'%textureName'のテクスチャーがちゃんとリソースパックの中に入っていません。"
-          - "テクスチャーが'assets/namespace/textures/'のサブフォルダーにあるのを確認して下さい。"
-          - "eg. 'resources/assets/minecraft/textures/item/diamond.png'"
+        - テクスチャ '%textureName' は Resource Pack 内の場所が無効です
+        - 有効な Resource Pack 内の 'assets/namespace/textures/' のサブフォルダーに正しく保存されていることを確認してください
+        - "例: 'resources/assets/minecraft/textures/item/diamond.png'"
 
       unableToGenerateModelPath:
-        title: モデルパス
+        title: 無効なモデルパス
         body:
-          - "'%modelName'のモデルがちゃんとリソースパックの中に入っていません。"
-          - "モデルが'assets/namespace/models/'のサブフォルダーにあるのを確認して下さい。"
-          - "eg. 'resources/assets/minecraft/models/item/diamond.json'"
+        - モデル '%modelName' は Resource Pack 内の場所が無効です
+        - 有効な Resource Pack 内の 'assets/namespace/models/' のサブフォルダーに正しく保存されていることを確認してください
+        - "例: 'resources/assets/minecraft/models/item/diamond.json'"
 
       invalidCubeRotations:
-        title: エレメントロテーション
+        title: 無効な要素回転
         body:
-          - キューブのロテーションをエクスポートする前に直して下さい。
+        - 一部のキューブの回転は Java モデル形式では無効です。
+        - エクスポートする前に、無効な回転をすべて修正してください。
 
       unsavedTexture:
-        title: セーブされていないテクスチャー
+        title: 未保存のテクスチャ
         body:
-          - "'%textureName'がディスクにセーブされていないです!"
-          - リソースパックの中にセーブされているのを確認して下さい。
+        - テクスチャ '%textureName' はディスクに保存されていません！
+        - 有効なリソースパックの場所に保存されていることを確認してください。
 
       transparentTexturePathNotFound:
-        title: 透明テクスチャーパスがセットせらていません
+        title: 透明テクスチャパスが定義されていません
         body:
-          - 透明のテクスチャーがあるヴァリアントがあります。
-          - 透明のテクスチャーを設定でコンフィギュアして下さい。
+        - テクスチャパスを定義せずに、透明テクスチャ付きのバリアントを使用しようとしているようです！
+        - エクスポートする前に、設定で透明テクスチャパスを構成する必要があります。
 
       rigModelsExportFolderUndefined:
-        title: リグモデルフォルダー
+        title: リグモデルフォルダーが未定義です
         body:
-          - エクスポートする前に、リグモデルのフォルダーをセットしてください。
+        - エクスポートする前に、設定でリグモデルフォルダーのパスを定義する必要があります。
 
   exporters:
     #? Generic Exporter Strings
     generic:
       progress:
-        writingDataPack: データパックをディスクに書き中... %progress% | %fileName　を書いています
-        exportingDataPack: データパック作り中... %progress%
+        writingDataPack: Data Pack をディスクに書き込み中... %progress% | 書き込み中 %fileName
+        exportingDataPack: Data Pack を生成中... %progress%
 
       settings:
         rootEntityType:
-          title: ルートエンティティ
+          title: ルートエンティティタイプ
           description:
-            - ルートエンティティとして使うエンティティ。このためには動かないエンティティが必要です。
+          - モデルのルートエンティティとして使用するエンティティタイプ
           errors:
-            invalidEntity: 選んだエンティティは存在しません！
+            invalidEntity: 選択したエンティティは存在しません！
 
         rootEntityNbt:
           title: ルートエンティティ NBT
           description:
-            - ルートエンティティのNBTデータ
+          - ルートエンティティの NBT データ
           errors:
-            invalidNbt: 無効なNBTです。
+            invalidNbt: 無効な NBT です！
 
         markerArmorStands:
-          title: マーカーアーマースタンド
+          title: マーカー Armor Stand
           description:
-            - エネーブルされているとき、ディスプレーするためのarmor_standsはヒットボックスもコリジョンもないです。
+          - 有効にすると、リグの表示に使用されるすべての armor_stand にヒットボックスや衝突判定がなくなります。
 
         modelTag:
           title: モデルタグ
           description:
-            - モデルを選ぶためのタグ
+          - モデルを選択するために使用するタグ
 
         rootTag:
           title: ルートタグ
           description:
-            - ルートエンティティを選ぶためのタグ
+          - 像のルートエンティティを選択するために使用するタグ
 
         allBonesTag:
-          title: 全てのボーンのタグ
+          title: 全ボーンタグ
           description:
-            - スタチューのボーンを選ぶためのタグ
+          - 像の任意またはすべてのボーンを選択するために使用するタグ
 
         boneModelDisplayTag:
-          title: ボーンモデルのディスプレータグ
+          title: ボーンモデル表示タグ
           description:
-            - どのエンティティがどのモデルを見せてるのを分かるなめのタグ。
+          - モデル表示エンティティ（頭にアイテムを装備した armor_stand）を選択するために使用するタグ
 
         individualBoneTag:
-          title: 一つづつのボーンのタグ
+          title: 個別ボーンタグ
           description:
-            - 名前で一つづつボーンお選べるためのタグ
+          - 名前で特定のボーンを選択するために使用するタグ
 
         internalScoreboardObjective:
-          title: インターナルスコアボード
+          title: 内部スコアボード
           description:
-            - 計算するためのスコアボードの名前
+          - 内部計算に使用するスコアボード objective の名前
 
         idScoreboardObjective:
           title: モデル ID スコアボード
           description:
-            - どのエンティティにどのモデルかセットするためのスコアボードの名前
+          - どのエンティティがどのモデルインスタンスに属しているかを識別するために使用するスコアボード objective の名前
 
         exportMode:
           title: エクスポートモード
           description:
-            - どのフォーマットでエクスポートするのを選んでください。バニラは普通のデータパックとリソースパックをエクスポートします。
-            - MCBはリソースパックとlang-mcコンパイラーのための.mcファイルをエクスポートします。
+          - エクスポートする形式の種類です。Vanilla は通常の Data Pack と Resource Pack をエクスポートします。
+          - MCB は lang-mc コンパイラー用の Resource Pack と .mc ファイルをエクスポートします
           options:
             mcb: MCB
-            vanilla: バニラ
+            vanilla: Vanilla
 
         itemsadderItemConfig:
           title: Lang-mc ファイル
           description:
-            - .mcをエクスポートする場所
-            - MCBのワークスペースの中にmc-extraを入れるのが必要です。（mcb add lang mc-extra）
+          - .mc ファイルのエクスポート先パス
+          - エクスポートされたデータパックをビルドするには、MCB ワークスペースに mc-extra をインストールする必要があります
 
         mcbConfigPath:
           title: Lang-mc config.json パス
           description:
-            - アニメーテッドジャバのためにMCB configをエクスポートします。
-            - WARNING! config.jsonをオーバーライトします。
+          - ItemsAdder Entity 用のデフォルト MCB config をエクスポートします
+          - 警告！既存の config.json は上書きされます
           errors:
-            mustBeNamedAfterProject: パスは%projectName.mc!で終わるのが必要です！
+            mustBeNamedAfterProject: パスは %projectName.mc という名前のファイルで終わる必要があります！
 
     #? Vanilla Statue Exporter
     vanillaStatue:
-      title: スタチューエクスポーター
+      title: Statue エクスポーター
 
     #? Vanilla Animation Exporter
     vanillaAnimation:
-      title: アニメーションエクスポーター
+      title: Animation エクスポーター
       dialogs:
         errors:
           zeroLengthAnimation:
-            title: ゼロレングスアニメーション
+            title: 長さがゼロのアニメーション
             body:
-              - 短すぎるアニメーションがあります。アニメーションは0.05秒はないといけません。（１ティック）
+            - アニメーション %animationName は短すぎます！アニメーションは少なくとも 0.05 秒（またはゲーム tick 1 回分）の長さが必要です
 
           noAnimations:
-            title: アニメーションがありません。
+            title: アニメーションがありません
             body:
-              - エクスポートする前にアニメーションを作って下さい。
-
+            - アニメーションが作成されていません！
+            - Animation エクスポーターを使用してエクスポートする前に、アニメーションタブでアニメーションを作成する必要があります。
+          markerNoLoopAnim:
+            message: このアニメーションの "Loop Mode" は "Loop" に設定されていません。マーカーを設定する前に値を "Loop" に変更してください。
+          tooManyMarkers:
+            message: このアニメーションにはすでに 2 つの "Loop Start/End" マーカーがあります！必要であれば右クリックして削除してください。
       settings:
         frameScoreboardObjective:
-          title: フレーム　スコアボード
+          title: フレームスコアボード
           description:
-            - アニメーションのためにどのフレームをプレイするのをセットするためのスコアボードの名前
+          - 次に再生するアニメーションのフレームを追跡するために使用するスコアボード objective の名前
 
         animatingFlagScoreboardObjective:
-          title: アニメーションフラグ　スコアボード
+          title: アニメーションフラグスコアボード
           description:
-            - 計算するためのスコアボードの名前
+          - リグが現在アニメーション中かどうかを照会するために使用するスコアボード objective の名前
 
         animationLoopModeScoreboardObjective:
-          title: アニメーションループモード　スコアボード
+          title: アニメーションループモードスコアボード
           description:
-            - ループアニメーションをコントロールするためのスコアボードの名前
-delete: me
+          - 各アニメーションのループ動作を制御するために使用するスコアボード objective の名前
+      other:
+        addLoopMarker: ループ開始/終了マーカーを追加
+        toggleLoopMarkers: ループ開始/終了マーカーを設定/削除

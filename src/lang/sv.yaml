@@ -1,2 +1,449 @@
-# please copy the contents of en.yaml to this file before you translate it.
-delete: me #this is required for a successful build
+iaentitymodel:
+  plugin:
+    title: ItemsAdder Entity
+
+  menubar:
+    dropdown: ItemsAdder Entity
+    settings: Inställningar
+    export: Exportera modell
+    about: Om...
+
+  panels:
+    variants:
+      title: Modellvarianter (inte implementerat)
+      addVariant:
+        title: Lägg till variant
+        description: Lägger till en ny variant i modellen
+      back: Tillbaka
+
+  popups:
+    exportCancelled: Export avbruten!
+    exportInProgress: Export pågår!
+    noExporterSelected: Ingen exportör vald!
+    successfullyExported: Export klar!
+    projectNotSaved: Spara projektet före export!
+
+  progress:
+    animationRendering: Renderar animationer... %currents/%totals
+
+  settings:
+    header: ItemsAdder Entity-inställningar
+    isGlobal: '(Global)'
+    isOptional: '(Valfritt)'
+
+    generic:
+      errors:
+        invalid: Om du ser det här meddelandet har ItemsAdder Entity gått sönder. (Hoppsan)
+        emptyValue: Värdet får inte vara tomt
+        mustBeBoolean: Värdet måste vara booleskt
+        mustBeString: Värdet måste vara en sträng
+        missingFormatString: Värdet saknar den obligatoriska formateringssträngen %notFound
+        invalidEntityTag: Värdet är inte en giltig entitetstagg
+
+    playerAnimationsName:
+      errors:
+        invalidFunctionName: Spelaranimationsfilen är inte giltig!
+
+    namespace:
+      title: Entitetens namespace
+      description:
+      - Namespace för din entitet.
+      errors:
+        invalidFunctionName: Entitetens namespace är inte giltigt!
+
+    projectName:
+      title: Entitets-ID
+      description:
+      - Det unika ID:t för din entitet.
+      errors:
+        invalidFunctionName: Entitets-ID är inte giltigt!
+
+    modelScalingMode:
+      title: Modellskalningsläge
+      description:
+      - Maximal modelstorlek ger modeller med bredden 7x7x7 block men begränsar skalning till endast förminskning.
+      - Maximalt skalningsintervall tillåter förminskning och förstoring upp till 3.125x, men begränsar maximal modelstorlek till 3x3x3 block
+      options:
+        3x3x3: Maximal skalning
+        7x7x7: Maximal modelstorlek
+
+    verbose:
+      title: Utförligt
+      description:
+      - Anger för den valda exportören om extra debug-/felmeddelanden ska exporteras.
+      - Påverkar egentligen bara staty- och animationsexportörerna.
+
+    transparentTexturePath:
+      title: Sökväg till transparent textur
+      description:
+      - En transparent textur för att lägga till transparens i varianter. Behövs bara om du använder transparens i dina varianter.
+      errors:
+        undefinedWhenNeeded: Sökvägen måste anges om du använder transparensfunktionen för varianter!
+
+    useCache:
+      title: Använd animationscache
+      description:
+      - Rendera bara om ändrade animationer
+
+    addsAdditionalModels:
+      title: Tillåt ytterligare modeller i spelaranimation
+      description:
+      - Aktivera detta om du har lagt till nya ben/modeller i scenen (till exempel tillbehör, andra entiteter, föremål...)
+
+    cacheMode:
+      title: Animationscacheläge
+      description:
+      - Animationscachen gör att bara animationer som har ändrats sedan senaste exporten renderas om. Upprepade exporter går mycket snabbare, särskilt för större modeller.
+      - "- Minnesläge är snabbare men använder mer minne för att lagra cachen."
+      - "- Diskläge är långsammare men sparar cachen på disk för att minska minnesanvändningen."
+      options:
+        memory: Minnesläge
+        disk: Diskläge
+
+    rotationMode:
+      title: Rotationsläge
+      description:
+      - "ItemsAdder erbjuder två rotationslägen för ben."
+      - "Du måste välja dem baserat på vad din entitet ska göra:"
+      - " - Smooth: passar för NPC:er och entiteter som inte rör sig särskilt snabbt och har få ben."
+      - " - Precise: passar för mobbar med många ben och/eller som rör sig mycket snabbt (exempel: springer, hoppar, flyger, bossar med komplexa attacker och liknande)."
+      options:
+        smooth: Mjuk
+        precise: Precis
+
+    boundingBoxRenderMode:
+      title: Begränsningsruta för benstorlek
+      description:
+      - "Konfigurera eller inaktivera begränsningsrutan/rutorna för benstorlek."
+      - "- Enkel visar bara en ruta åt gången."
+      - "- Flera visar en ruta för varje ben du har valt."
+      - "- Inaktiverad stänger av den helt."
+      options:
+        single: Enkel
+        many: Flera
+        none: Inaktiverad
+
+    idleAnim:
+      title: Vilolägesanimation
+      description:
+      - Namn på vilolägesanimationen
+
+    walkAnim:
+      title: Gånganimation
+      description:
+      - Namn på gånganimationen
+
+    attackAnim:
+      title: Attackanimation
+      description:
+      - Namn på attackanimationen
+
+    deathAnim:
+      title: Dödsanimation
+      description:
+      - Namn på dödsanimationen
+
+    flyAnim:
+      title: Flyganimation
+      description:
+      - Namn på flyganimationen
+
+    invalidAnim: Ogiltigt animationsnamn
+
+  menu:
+    animation:
+      animType:
+        title: "Animationstyp"
+        value:
+          other: "Annan"
+          idle: "Vila"
+          walk: "Gå"
+          attack: "Attack"
+          death: "Död"
+          fly: "Flyg"
+
+  dialogs:
+    boneConfig:
+      title: Benkonfiguration
+      boneNbt: Ben-NBT
+      boneType: Bentyp
+      head: Huvud
+      normal: Generiskt ben
+      leftHandPivot: Vänsterhandspivot
+      rightHandPivot: Högerhandspivot
+      hatPivot: Hattpivot
+      mount: Fäste (används som sittplats)
+      locator: Locator (används som plats för effekter)
+      hitbox: Hitbox (område som kan attackeras/interageras med)
+      hitboxMultiCubeWarning: Är du säker? Det här benet har mer än en kub. Alla texturer kommer att tas bort.
+      headProperties: "Huvudegenskaper"
+      maxHeadRotY: "Maximal huvudvinkel Y"
+      maxHeadRotX: "Maximal huvudvinkel X"
+    variants:
+      title: Modellvarianter
+      description:
+      - Varianter låter din modell ha olika "skins" som kan bytas under körning med en funktion.
+
+    about:
+      title: Om ItemsAdder Entity
+      description:
+      - Ett verktyg för serveradministratörer för att skapa mjuka och detaljerade animationer för ItemsAdder (Spigot-plugin för Minecraft Java Edition)
+
+      version: Version
+      buildID: Bygg-ID
+
+      creators: Skapare
+      discordServer: Gå med i min Discord-server!
+      githubRepo: Källkod
+      developers: Utvecklare
+      originalDevelopers: Ursprungliga Animated Java-utvecklare
+      originalPluginInfo: Info om det ursprungliga Animated Java-pluginet
+      patrons: Patroner
+      honourableMentions: Hedersomnämnanden
+
+      fetchbotQuote: '"Låt java-mobbarna dansa också!"'
+      snavesutitQuote: '"armor_stand är kärlek, armor_stand är livet."'
+
+      youtuber: YouTuber
+      translator: Översättare
+      contributor: Bidragsgivare
+      moderator: Discord-moderator
+      closedBeta: Stängd betatestare
+      brandingArtist: Varumärkesartist
+      patronTier1: Patron nivå 1
+      patronTier2: Patron nivå 2
+      patronTier3: Patron nivå 3
+
+    animationProperties:
+      animationCompleteCommand:
+        label: Kommando vid animationsslut
+
+    errors:
+      misc:
+        title: Ett okänt fel har inträffat i ItemsAdder Entity
+        body:
+        - |-
+          <textarea style="height: 256px" readonly="readonly">
+          ------ Fel ------
+          %errorMessage  //  "%randomErrorMessage"
+          ------ Stack ------
+          %errorStack
+
+          Bygg-ID: %buildID
+          </textarea>
+        - <p>Rapportera det här felet på <a href="%githubLink">ItemsAdder Entitys github</a> med information om hur det kan återskapas och en kopia av felet ovan.</p>
+        - <p>Du kan också gå med i vår <a href="%discordLink">Discord-server</a> och ställa frågor i kanalen animated-java-support.</p>
+        - <p>Tack!</p>
+
+      scaleOutOfBounds:
+        title: Skalning utanför gränser
+        body:
+        - "Benet '%boneName' har ogiltig skalning under en av dina animationer:"
+        - "%displayString"
+
+      topLevelCubes:
+        title: Modellen har kuber på toppnivå
+        body:
+        - Alla kuber måste ligga i en grupp.
+
+      predicateMergeFailed:
+        title: Predikat kunde inte slås ihop
+        body:
+        - "%reason"
+        - ItemsAdder Entity stöder bara sammanslagning med predikatmodeller som kontrolleras av ItemsAdder Entity.
+        - Kontrollera att du försöker slå ihop din predikatobjektmodell med en giltig befintlig ItemsAdder Entity-predikatobjektmodell.
+        reasons:
+          overridesMissing: Listan med modellöverskrivningar saknas.
+          ajMetaMissing: Modellfilen som ska slås ihop med är inte en ItemsAdder Entity-predikatfil.
+
+      invalidAnimationSnappingValue:
+        title: Ogiltigt snapping-värde för animation
+        body:
+        - Animationen '%animationName' har snapping-värdet %snapping!
+        - På grund av Minecrafts snabba tick stöder ItemsAdder Entity bara snapping-värdet 20.
+        - Uppdatera dina animationer och keyframes så att de följer denna begränsning innan du exporterar.
+        - (Du kan behöva flytta dina keyframes lite på tidslinjen för att uppdatera deras snappade tid)
+
+      rigFolderHasUnknownContent:
+        title: Oanvänd riggmapp
+        body:
+        - Mappen du har valt som riggmodellmapp innehåller okända filer.
+        - Är du säker på att du vill skriva över innehållet i den här mappen med din rigg?
+        - "Vald mapp:"
+        - <textarea>%path</textarea>
+        - "Okända filer:"
+        - <textarea>%files</textarea>
+
+      rigFolderAlreadyUsedByOther:
+        title: Den valda riggmodellmappen används redan
+        body:
+        - Mappen du har valt som riggmodellmapp innehåller redan modeller från en annan rigg.
+        - Är du säker på att du vill skriva över innehållet i den här mappen med din rigg?
+        - "Vald mapp:"
+        - <textarea>%path</textarea>
+        - "Filer:"
+        - <textarea>%files</textarea>
+
+      unableToGenerateTexturePath:
+        title: Ogiltig textursökväg
+        body:
+        - Texturen '%textureName' har en ogiltig plats i ett resurspaket
+        - Kontrollera att den är korrekt sparad i ett giltigt resurspaket i en undermapp till 'assets/namespace/textures/'
+        - t.ex. 'resources/assets/minecraft/textures/item/diamond.png'
+
+      unableToGenerateModelPath:
+        title: Ogiltig modellsökväg
+        body:
+        - Modellen '%modelName' har en ogiltig plats i ett resurspaket
+        - Kontrollera att den är korrekt sparad i ett giltigt resurspaket i en undermapp till 'assets/namespace/models/'
+        - t.ex. 'resources/assets/minecraft/models/item/diamond.json'
+
+      invalidCubeRotations:
+        title: Ogiltiga elementrotationer
+        body:
+        - Rotationerna för vissa kuber är ogiltiga för java-modellformatet.
+        - Åtgärda alla ogiltiga rotationer före export.
+
+      unsavedTexture:
+        title: Osparad textur
+        body:
+        - Texturen '%textureName' är inte sparad på disk!
+        - Kontrollera att den är sparad på en giltig resurspaketsplats.
+
+      transparentTexturePathNotFound:
+        title: Sökväg till transparent textur har inte angetts
+        body:
+        - Det verkar som att du försöker använda varianter med transparenta texturer utan att ange en textursökväg!
+        - Du måste konfigurera sökvägen till den transparenta texturen i inställningarna innan du kan exportera.
+
+      rigModelsExportFolderUndefined:
+        title: Riggmodellmapp har inte angetts
+        body:
+        - Du måste ange en sökväg till riggmodellmappen i inställningarna innan du kan exportera.
+
+  exporters:
+    #? Generic Exporter Strings
+    generic:
+      progress:
+        writingDataPack: Skriver datapaket till disk... %progress% | Skriver %fileName
+        exportingDataPack: Genererar datapaket... %progress%
+
+      settings:
+        rootEntityType:
+          title: Rotentitetstyp
+          description:
+          - Entitetstypen som ska användas som rotentitet för modellen
+          errors:
+            invalidEntity: Den valda entiteten finns inte!
+
+        rootEntityNbt:
+          title: Rotentitets-NBT
+          description:
+          - NBT-data för rotentiteten
+          errors:
+            invalidNbt: Ogiltig NBT!
+
+        markerArmorStands:
+          title: Armor stands som markörer
+          description:
+          - När detta är aktiverat får alla armor_stands som används för att visa riggen ingen hitbox eller kollision.
+
+        modelTag:
+          title: Modelltagg
+          description:
+          - Taggen som används för att välja modellen
+
+        rootTag:
+          title: Rottagg
+          description:
+          - Taggen som används för att välja statyns rotentitet
+
+        allBonesTag:
+          title: Tagg för alla ben
+          description:
+          - Taggen som används för att välja ett eller alla av statyns ben
+
+        boneModelDisplayTag:
+          title: Tagg för visning av benmodell
+          description:
+          - Taggen som används för att välja modellvisningsentiteterna (armor_stands med föremål på huvudet)
+
+        individualBoneTag:
+          title: Tagg för enskilt ben
+          description:
+          - Taggen som används för att välja ett specifikt ben efter namn
+
+        internalScoreboardObjective:
+          title: Internt scoreboard
+          description:
+          - Namnet på scoreboard-målet som används för interna beräkningar
+
+        idScoreboardObjective:
+          title: Scoreboard för modell-ID
+          description:
+          - Namnet på scoreboard-målet som används för att identifiera vilka entiteter som hör till vilken modellinstans
+
+        exportMode:
+          title: Exportläge
+          description:
+          - Vilket format som ska exporteras till. Vanilla exporterar ett vanligt datapaket och resurspaket.
+          - MCB exporterar ett resurspaket och en .mc-fil för lang-mc-kompilatorn
+          options:
+            mcb: MCB
+            vanilla: Vanilla
+
+        itemsadderItemConfig:
+          title: Lang-mc-fil
+          description:
+          - Sökvägen som .mc-filen ska exporteras till
+          - Du behöver installera mc-extra i din MCB-arbetsyta för att bygga det exporterade datapaketet
+
+        mcbConfigPath:
+          title: Sökväg till Lang-mc config.json
+          description:
+          - Exporterar standard-MCB-konfigurationen för ItemsAdder Entity
+          - VARNING! Skriver över befintlig config.json
+          errors:
+            mustBeNamedAfterProject: Sökvägen måste sluta med en fil som heter %projectName.mc!
+
+    #? Vanilla Statue Exporter
+    vanillaStatue:
+      title: Statyexportör
+
+    #? Vanilla Animation Exporter
+    vanillaAnimation:
+      title: Animationsexportör
+      dialogs:
+        errors:
+          zeroLengthAnimation:
+            title: Animation med noll längd
+            body:
+            - Animationen %animationName är för kort! Animationer måste vara minst 0.05 sekunder (eller 1 speltick) långa
+
+          noAnimations:
+            title: Inga animationer
+            body:
+            - Du har inte skapat några animationer!
+            - Du behöver skapa några animationer på animationsfliken innan du kan exportera med animationsexportören.
+          markerNoLoopAnim:
+            message: Den här animationens "Loop Mode" är inte satt till "Loop". Ändra värdet till "Loop" innan du sätter markörer.
+          tooManyMarkers:
+            message: Den här animationen innehåller redan 2 "Loop Start/End"-markörer! Högerklicka på dem för att ta bort dem vid behov.
+      settings:
+        frameScoreboardObjective:
+          title: Scoreboard för bildrutor
+          description:
+          - Namnet på scoreboard-målet som används för att spåra vilken bildruta i en animation som ska spelas härnäst
+
+        animatingFlagScoreboardObjective:
+          title: Scoreboard för animationsflagga
+          description:
+          - Namnet på scoreboard-målet som används för att kontrollera om en rigg aktivt animeras
+
+        animationLoopModeScoreboardObjective:
+          title: Scoreboard för animationsloopläge
+          description:
+          - Namnet på scoreboard-målet som används för att styra loopbeteendet för varje animation
+      other:
+        addLoopMarker: Lägg till markör för loopstart/-slut
+        toggleLoopMarkers: Sätt/ta bort markörer för loopstart/-slut

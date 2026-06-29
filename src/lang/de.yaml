@@ -1,2 +1,449 @@
-# please copy the contents of en.yaml to this file before you translate it.
-delete: me #this is required for a successful build
+iaentitymodel:
+  plugin:
+    title: ItemsAdder Entity
+
+  menubar:
+    dropdown: ItemsAdder Entity
+    settings: Einstellungen
+    export: Modell exportieren
+    about: Über...
+
+  panels:
+    variants:
+      title: Modellvarianten (nicht implementiert)
+      addVariant:
+        title: Variante hinzufügen
+        description: Fügt dem Modell eine neue Variante hinzu
+      back: Zurück
+
+  popups:
+    exportCancelled: Export abgebrochen!
+    exportInProgress: Export läuft!
+    noExporterSelected: Kein Exporter ausgewählt!
+    successfullyExported: Export erfolgreich!
+    projectNotSaved: Bitte speichere das Projekt vor dem Exportieren!
+
+  progress:
+    animationRendering: Animationen werden gerendert... %currents/%totals
+
+  settings:
+    header: ItemsAdder Entity Einstellungen
+    isGlobal: '(Global)'
+    isOptional: '(Optional)'
+
+    generic:
+      errors:
+        invalid: Wenn du diese Nachricht siehst, ist ItemsAdder Entity beschädigt. (Uh Oh)
+        emptyValue: Wert darf nicht leer sein
+        mustBeBoolean: Wert muss ein boolescher Wert sein
+        mustBeString: Wert muss eine Zeichenkette sein
+        missingFormatString: Wert fehlt die erforderliche Formatierungszeichenkette %notFound
+        invalidEntityTag: Wert ist kein gültiger Entity-Tag
+
+    playerAnimationsName:
+      errors:
+        invalidFunctionName: Die Datei für Spieleranimationen ist ungültig!
+
+    namespace:
+      title: Entity-Namespace
+      description:
+      - Der Namespace deiner Entity.
+      errors:
+        invalidFunctionName: Entity-Namespace ist ungültig!
+
+    projectName:
+      title: Entity-ID
+      description:
+      - Die eindeutige ID deiner Entity.
+      errors:
+        invalidFunctionName: Entity-ID ist ungültig!
+
+    modelScalingMode:
+      title: Modell-Skalierungsmodus
+      description:
+      - Maximale Modellgröße erlaubt Modelle mit einer Größe von 7x7x7 Blöcken, beschränkt die Skalierung aber nur auf Verkleinern.
+      - Maximaler Skalierungsbereich erlaubt Verkleinern und Vergrößern bis zu einer Größe von 3.125x, beschränkt die maximale Modellgröße aber auf 3x3x3 Blöcke
+      options:
+        3x3x3: Maximale Skalierung
+        7x7x7: Maximale Modellgröße
+
+    verbose:
+      title: Ausführlich
+      description:
+      - Gibt dem ausgewählten Exporter an, ob zusätzliche Debug-/Fehlermeldungen exportiert werden sollen.
+      - Betrifft eigentlich nur die Statue- und Animation-Exporter.
+
+    transparentTexturePath:
+      title: Pfad zur transparenten Textur
+      description:
+      - Eine transparente Textur, um Varianten Transparenz hinzuzufügen. Nur nötig, wenn du in deinen Varianten Transparenz verwendest.
+      errors:
+        undefinedWhenNeeded: Der Pfad muss definiert sein, wenn du die Transparenzfunktion von Varianten verwendest!
+
+    useCache:
+      title: Animationscache verwenden
+      description:
+      - Nur geänderte Animationen erneut rendern
+
+    addsAdditionalModels:
+      title: Zusätzliche Modelle in Spieleranimation erlauben
+      description:
+      - Aktiviere dies, wenn du der Szene neue Bones/Modelle hinzugefügt hast (zum Beispiel Zubehör, andere Entities, Items...)
+
+    cacheMode:
+      title: Animationscache-Modus
+      description:
+      - Der Animationscache erlaubt es, nur Animationen erneut zu rendern, die seit dem letzten Export geändert wurden. Dadurch werden wiederholte Exporte deutlich schneller, besonders bei größeren Modellen.
+      - "- Der Speichermodus ist schneller, verwendet aber mehr Arbeitsspeicher zum Speichern des Caches."
+      - "- Der Festplattenmodus ist langsamer, speichert den Cache aber auf der Festplatte, um Arbeitsspeicher zu sparen."
+      options:
+        memory: Speichermodus
+        disk: Festplattenmodus
+
+    rotationMode:
+      title: Rotationsmodus
+      description:
+      - "ItemsAdder bietet zwei Rotationsmodi für Bones."
+      - "Du musst sie danach auswählen, was deine Entity tun wird:"
+      - " - Glatt: geeignet für NPCs und Entities, die sich nicht sehr schnell bewegen und nur wenige Bones haben."
+      - " - Präzise: geeignet für Mobs mit vielen Bones und/oder sehr schneller Bewegung (Beispiel: rennen, springen, fliegen, Bosse mit komplexen Angriffen und Ähnliches)."
+      options:
+        smooth: Glatt
+        precise: Präzise
+
+    boundingBoxRenderMode:
+      title: Bone-Größenbegrenzungsbox
+      description:
+      - "Konfiguriere oder deaktiviere die Bone-Größenbegrenzungsbox(en)."
+      - "- Einzeln zeigt jeweils nur eine Box an."
+      - "- Mehrfach zeigt für jeden ausgewählten Bone eine Box an."
+      - "- Deaktiviert deaktiviert sie vollständig."
+      options:
+        single: Einzeln
+        many: Mehrfach
+        none: Deaktiviert
+
+    idleAnim:
+      title: Idle-Animation
+      description:
+      - Name der Idle-Animation
+
+    walkAnim:
+      title: Laufanimation
+      description:
+      - Name der Laufanimation
+
+    attackAnim:
+      title: Angriffsanimation
+      description:
+      - Name der Angriffsanimation
+
+    deathAnim:
+      title: Todesanimation
+      description:
+      - Name der Todesanimation
+
+    flyAnim:
+      title: Fluganimation
+      description:
+      - Name der Fluganimation
+
+    invalidAnim: Ungültiger Animationsname
+
+  menu:
+    animation:
+      animType:
+        title: "Animationstyp"
+        value:
+          other: "Andere"
+          idle: "Idle"
+          walk: "Laufen"
+          attack: "Angriff"
+          death: "Tod"
+          fly: "Fliegen"
+
+  dialogs:
+    boneConfig:
+      title: Bone-Konfiguration
+      boneNbt: Bone-NBT
+      boneType: Bone-Typ
+      head: Kopf
+      normal: Generischer Bone
+      leftHandPivot: Pivot der linken Hand
+      rightHandPivot: Pivot der rechten Hand
+      hatPivot: Hut-Pivot
+      mount: Reittier (als Sitzposition verwendet)
+      locator: Locator (als Position für Effekte verwendet)
+      hitbox: Hitbox (Bereich, der angegriffen/interagiert werden kann)
+      hitboxMultiCubeWarning: Bist du sicher? Dieser Bone hat mehr als einen Würfel. Alle Texturen werden entfernt.
+      headProperties: "Kopfeigenschaften"
+      maxHeadRotY: "Maximaler Kopf-Y-Winkel"
+      maxHeadRotX: "Maximaler Kopf-X-Winkel"
+    variants:
+      title: Modellvarianten
+      description:
+      - Varianten erlauben deinem Modell verschiedene "Skins", die zur Laufzeit mithilfe einer Funktion ausgetauscht werden können.
+
+    about:
+      title: Über ItemsAdder Entity
+      description:
+      - Ein Tool für Serveradministratoren, um flüssige und detaillierte Animationen für ItemsAdder zu erstellen (Spigot-Plugin für Minecraft Java Edition)
+
+      version: Version
+      buildID: Build-ID
+
+      creators: Ersteller
+      discordServer: Tritt meinem Discord-Server bei!
+      githubRepo: Quellcode
+      developers: Entwickler
+      originalDevelopers: Ursprüngliche Animated Java Entwickler
+      originalPluginInfo: Ursprüngliche Animated Java Plugin-Info
+      patrons: Unterstützer
+      honourableMentions: Ehrenwerte Erwähnungen
+
+      fetchbotQuote: '"Lasst auch die Java-Mobs tanzen!"'
+      snavesutitQuote: '"armor_stand ist Liebe, armor_stand ist Leben."'
+
+      youtuber: YouTuber
+      translator: Übersetzer
+      contributor: Mitwirkender
+      moderator: Discord-Moderator
+      closedBeta: Closed-Beta-Tester
+      brandingArtist: Branding-Künstler
+      patronTier1: Unterstützer Stufe 1
+      patronTier2: Unterstützer Stufe 2
+      patronTier3: Unterstützer Stufe 3
+
+    animationProperties:
+      animationCompleteCommand:
+        label: Befehl am Ende der Animation
+
+    errors:
+      misc:
+        title: In ItemsAdder Entity ist ein unbekannter Fehler aufgetreten
+        body:
+        - |-
+          <textarea style="height: 256px" readonly="readonly">
+          ------ Fehler ------
+          %errorMessage  //  "%randomErrorMessage"
+          ------ Stack ------
+          %errorStack
+
+          Build-ID: %buildID
+          </textarea>
+        - <p>Bitte melde diesen Fehler auf dem <a href="%githubLink">GitHub von ItemsAdder Entity</a> mit Informationen dazu, wie er reproduziert werden kann, und einer Kopie des obigen Fehlers.</p>
+        - <p>Du kannst auch unserem <a href="%discordLink">Discord-Server</a> beitreten und Fragen im animated-java-support-Kanal stellen.</p>
+        - <p>Danke!</p>
+
+      scaleOutOfBounds:
+        title: Skalierung außerhalb des zulässigen Bereichs
+        body:
+        - "Der Bone '%boneName' hat während einer deiner Animationen eine ungültige Skalierung:"
+        - "%displayString"
+
+      topLevelCubes:
+        title: Modell hat Würfel auf oberster Ebene
+        body:
+        - Alle Würfel müssen sich innerhalb einer Gruppe befinden.
+
+      predicateMergeFailed:
+        title: Prädikat konnte nicht zusammengeführt werden
+        body:
+        - "%reason"
+        - ItemsAdder Entity unterstützt das Zusammenführen nur in Prädikatmodelle, die von ItemsAdder Entity gesteuert werden.
+        - Bitte stelle sicher, dass du versuchst, dein Prädikat-Item-Modell mit einem gültigen, bereits vorhandenen ItemsAdder Entity Prädikat-Item-Modell zusammenzuführen.
+        reasons:
+          overridesMissing: Die Liste der Modell-Overrides fehlt.
+          ajMetaMissing: Die Modelldatei, in die zusammengeführt werden soll, ist keine ItemsAdder Entity Prädikatdatei.
+
+      invalidAnimationSnappingValue:
+        title: Ungültiger Animation-Snapping-Wert
+        body:
+        - Die Animation '%animationName' hat einen Snapping-Wert von %snapping!
+        - Wegen der Geschwindigkeit der Minecraft-Ticks unterstützt ItemsAdder Entity nur einen Snapping-Wert von 20.
+        - Bitte aktualisiere deine Animationen und Keyframes, damit sie diese Einschränkung berücksichtigen, bevor du exportierst.
+        - (Du musst deine Keyframes eventuell ein wenig auf der Zeitleiste bewegen, um ihre eingerastete Zeit zu aktualisieren)
+
+      rigFolderHasUnknownContent:
+        title: Nicht verwendeter Rig-Ordner
+        body:
+        - Der Ordner, den du als Rig-Modellordner ausgewählt hast, enthält unbekannte Dateien.
+        - Bist du sicher, dass du den Inhalt dieses Ordners mit deinem Rig überschreiben möchtest?
+        - "Ausgewählter Ordner:"
+        - <textarea>%path</textarea>
+        - "Unbekannte Dateien:"
+        - <textarea>%files</textarea>
+
+      rigFolderAlreadyUsedByOther:
+        title: Der ausgewählte Rig-Modellordner wird bereits verwendet
+        body:
+        - Der Ordner, den du als Rig-Modellordner ausgewählt hast, enthält bereits Modelle eines anderen Rigs.
+        - Bist du sicher, dass du den Inhalt dieses Ordners mit deinem Rig überschreiben möchtest?
+        - "Ausgewählter Ordner:"
+        - <textarea>%path</textarea>
+        - "Dateien:"
+        - <textarea>%files</textarea>
+
+      unableToGenerateTexturePath:
+        title: Ungültiger Texturpfad
+        body:
+        - Die Textur '%textureName' hat einen ungültigen Speicherort innerhalb eines Resource Packs
+        - Bitte stelle sicher, dass sie korrekt innerhalb eines gültigen Resource Packs in einem Unterordner von 'assets/namespace/textures/' gespeichert ist
+        - z. B. 'resources/assets/minecraft/textures/item/diamond.png'
+
+      unableToGenerateModelPath:
+        title: Ungültiger Modellpfad
+        body:
+        - Das Modell '%modelName' hat einen ungültigen Speicherort innerhalb eines Resource Packs
+        - Bitte stelle sicher, dass es korrekt innerhalb eines gültigen Resource Packs in einem Unterordner von 'assets/namespace/models/' gespeichert ist
+        - z. B. 'resources/assets/minecraft/models/item/diamond.json'
+
+      invalidCubeRotations:
+        title: Ungültige Elementrotationen
+        body:
+        - Die Rotationen einiger Würfel sind für das Java-Modellformat ungültig.
+        - Bitte behebe alle ungültigen Rotationen vor dem Exportieren.
+
+      unsavedTexture:
+        title: Nicht gespeicherte Textur
+        body:
+        - Die Textur '%textureName' ist nicht auf der Festplatte gespeichert!
+        - Bitte stelle sicher, dass sie an einem gültigen Resource-Pack-Speicherort gespeichert ist.
+
+      transparentTexturePathNotFound:
+        title: Pfad zur transparenten Textur nicht definiert
+        body:
+        - Es sieht so aus, als würdest du Varianten mit transparenten Texturen verwenden, ohne einen Texturpfad zu definieren!
+        - Du musst den Pfad zur transparenten Textur in den Einstellungen konfigurieren, bevor du exportieren kannst.
+
+      rigModelsExportFolderUndefined:
+        title: Rig-Modellordner nicht definiert
+        body:
+        - Du musst in den Einstellungen einen Pfad für den Rig-Modellordner definieren, bevor du exportieren kannst.
+
+  exporters:
+    #? Allgemeine Exporter-Texte
+    generic:
+      progress:
+        writingDataPack: Data Pack wird auf die Festplatte geschrieben... %progress% | Schreibe %fileName
+        exportingDataPack: Data Pack wird generiert... %progress%
+
+      settings:
+        rootEntityType:
+          title: Root-Entity-Typ
+          description:
+          - Der Entity-Typ, der als Root-Entity für das Modell verwendet wird
+          errors:
+            invalidEntity: Ausgewählte Entity existiert nicht!
+
+        rootEntityNbt:
+          title: Root-Entity-NBT
+          description:
+          - Die NBT-Daten der Root-Entity
+          errors:
+            invalidNbt: Ungültiges NBT!
+
+        markerArmorStands:
+          title: Marker Armor Stands
+          description:
+          - Wenn aktiviert, haben alle armor_stands, die zur Anzeige des Rigs verwendet werden, keine Hitbox oder Kollision.
+
+        modelTag:
+          title: Modell-Tag
+          description:
+          - Der Tag, der zur Auswahl des Modells verwendet wird
+
+        rootTag:
+          title: Root-Tag
+          description:
+          - Der Tag, der zur Auswahl der Root-Entity der Statue verwendet wird
+
+        allBonesTag:
+          title: Alle-Bones-Tag
+          description:
+          - Der Tag, der zur Auswahl beliebiger oder aller Bones der Statue verwendet wird
+
+        boneModelDisplayTag:
+          title: Bone-Modelldarstellungs-Tag
+          description:
+          - Der Tag, der zur Auswahl der Modelldarstellungs-Entities verwendet wird (armor_stands mit Items auf ihren Köpfen)
+
+        individualBoneTag:
+          title: Einzelner-Bone-Tag
+          description:
+          - Der Tag, der zur Auswahl eines bestimmten Bones anhand seines Namens verwendet wird
+
+        internalScoreboardObjective:
+          title: Internes Scoreboard
+          description:
+          - Der Name des Scoreboard-Objectives, das für interne Berechnungen verwendet wird
+
+        idScoreboardObjective:
+          title: Modell-ID-Scoreboard
+          description:
+          - Der Name des Scoreboard-Objectives, das verwendet wird, um zu identifizieren, welche Entities zu welcher Modellinstanz gehören
+
+        exportMode:
+          title: Exportmodus
+          description:
+          - Legt fest, in welches Format exportiert wird. Vanilla exportiert ein normales Data Pack und Resource Pack.
+          - MCB exportiert ein Resource Pack und eine .mc-Datei für den lang-mc-Compiler
+          options:
+            mcb: MCB
+            vanilla: Vanilla
+
+        itemsadderItemConfig:
+          title: Lang-mc-Datei
+          description:
+          - Der Pfad, in den die .mc-Datei exportiert wird
+          - Du musst mc-extra in deinem MCB-Workspace installieren, um das exportierte Data Pack zu bauen
+
+        mcbConfigPath:
+          title: Lang-mc config.json Pfad
+          description:
+          - Exportiert die Standard-MCB-Konfiguration für ItemsAdder Entity
+          - WARNUNG! Überschreibt vorhandene config.json
+          errors:
+            mustBeNamedAfterProject: Der Pfad muss mit einer Datei namens %projectName.mc enden!
+
+    #? Vanilla Statue Exporter
+    vanillaStatue:
+      title: Statue-Exporter
+
+    #? Vanilla Animation Exporter
+    vanillaAnimation:
+      title: Animation-Exporter
+      dialogs:
+        errors:
+          zeroLengthAnimation:
+            title: Animation mit Länge null
+            body:
+            - Die Animation %animationName ist zu kurz! Animationen müssen mindestens 0.05 Sekunden (oder 1 Game-Tick) lang sein
+
+          noAnimations:
+            title: Keine Animationen
+            body:
+            - Du hast keine Animationen erstellt!
+            - Du musst im Animation-Tab einige Animationen erstellen, bevor du mit dem Animation-Exporter exportieren kannst.
+          markerNoLoopAnim:
+            message: Diese Animation hat den "Loop Mode" nicht auf "Loop" gesetzt. Bitte ändere den Wert auf "Loop", bevor du Marker setzt.
+          tooManyMarkers:
+            message: Diese Animation enthält bereits 2 "Loop Start/End"-Marker! Rechtsklicke sie, um sie bei Bedarf zu löschen.
+      settings:
+        frameScoreboardObjective:
+          title: Frame-Scoreboard
+          description:
+          - Der Name des Scoreboard-Objectives, das verfolgt, welcher Frame einer Animation als Nächstes abgespielt werden soll
+
+        animatingFlagScoreboardObjective:
+          title: Animations-Flag-Scoreboard
+          description:
+          - Der Name des Scoreboard-Objectives, das abfragt, ob ein Rig aktiv animiert wird
+
+        animationLoopModeScoreboardObjective:
+          title: Animation-Loop-Modus-Scoreboard
+          description:
+          - Der Name des Scoreboard-Objectives, das verwendet wird, um das Schleifenverhalten jeder Animation zu steuern
+      other:
+        addLoopMarker: Loop-Start-/Ende-Marker hinzufügen
+        toggleLoopMarkers: Loop-Start-/Ende-Marker setzen/entfernen

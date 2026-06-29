@@ -1,2 +1,449 @@
-# please copy the contents of en.yaml to this file before you translate it.
-delete: me #this is required for a successful build
+iaentitymodel:
+  plugin:
+    title: ItemsAdder Entity
+
+  menubar:
+    dropdown: ItemsAdder Entity
+    settings: Настройки
+    export: Экспорт модели
+    about: О программе...
+
+  panels:
+    variants:
+      title: Варианты модели (не реализовано)
+      addVariant:
+        title: Добавить вариант
+        description: Добавляет новый вариант к модели
+      back: Назад
+
+  popups:
+    exportCancelled: Экспорт отменён!
+    exportInProgress: Выполняется экспорт!
+    noExporterSelected: Экспортёр не выбран!
+    successfullyExported: Экспорт выполнен!
+    projectNotSaved: Сохраните проект перед экспортом!
+
+  progress:
+    animationRendering: Рендеринг анимаций... %currents/%totals
+
+  settings:
+    header: Настройки ItemsAdder Entity
+    isGlobal: '(Глобально)'
+    isOptional: '(Необязательно)'
+
+    generic:
+      errors:
+        invalid: Если вы видите это сообщение, ItemsAdder Entity сломался. (Ой)
+        emptyValue: Значение не может быть пустым
+        mustBeBoolean: Значение должно быть логическим
+        mustBeString: Значение должно быть строкой
+        missingFormatString: В значении отсутствует обязательная строка форматирования %notFound
+        invalidEntityTag: Значение не является корректным тегом сущности
+
+    playerAnimationsName:
+      errors:
+        invalidFunctionName: Файл анимаций игрока некорректен!
+
+    namespace:
+      title: Пространство имён сущности
+      description:
+      - Пространство имён вашей сущности.
+      errors:
+        invalidFunctionName: Пространство имён сущности некорректно!
+
+    projectName:
+      title: ID сущности
+      description:
+      - Уникальный ID вашей сущности.
+      errors:
+        invalidFunctionName: ID сущности некорректен!
+
+    modelScalingMode:
+      title: Режим масштабирования модели
+      description:
+      - Максимальный размер модели позволяет использовать модели шириной 7x7x7 блоков, но ограничивает масштабирование только уменьшением.
+      - Максимальный диапазон масштабирования позволяет уменьшать и увеличивать размер до 3.125x, но ограничивает максимальный размер модели 3x3x3 блоками
+      options:
+        3x3x3: Максимальное масштабирование
+        7x7x7: Максимальный размер модели
+
+    verbose:
+      title: Подробный вывод
+      description:
+      - Указывает выбранному экспортёру, нужно ли экспортировать дополнительные сообщения отладки/ошибок.
+      - Фактически влияет только на экспортёры статуй и анимаций.
+
+    transparentTexturePath:
+      title: Путь к прозрачной текстуре
+      description:
+      - Прозрачная текстура для добавления прозрачности вариантам. Требуется только если вы используете прозрачность в вариантах.
+      errors:
+        undefinedWhenNeeded: Путь должен быть задан, если вы используете функцию прозрачности вариантов!
+
+    useCache:
+      title: Использовать кэш анимаций
+      description:
+      - Повторно рендерить только изменённые анимации
+
+    addsAdditionalModels:
+      title: Разрешить дополнительные модели в анимации игрока
+      description:
+      - Включите это, если вы добавили в сцену новые кости/модели (например аксессуары, другие сущности, предметы...)
+
+    cacheMode:
+      title: Режим кэша анимаций
+      description:
+      - Кэш анимаций позволяет повторно рендерить только анимации, изменённые с последнего экспорта. Повторный экспорт становится намного быстрее, особенно для крупных моделей.
+      - "- Режим памяти быстрее, но использует больше памяти для хранения кэша."
+      - "- Режим диска медленнее, но сохраняет кэш на диск, чтобы уменьшить использование памяти."
+      options:
+        memory: Режим памяти
+        disk: Режим диска
+
+    rotationMode:
+      title: Режим вращения
+      description:
+      - "ItemsAdder предлагает два режима вращения костей."
+      - "Выберите их в зависимости от того, что будет делать ваша сущность:"
+      - " - Плавный: подходит для NPC и сущностей, которые не будут очень быстро перемещаться и имеют мало костей."
+      - " - Точный: подходит для мобов с большим количеством костей и/или очень быстрым движением (например: бег, прыжок, полёт, боссы со сложными атаками и т.п.)."
+      options:
+        smooth: Плавный
+        precise: Точный
+
+    boundingBoxRenderMode:
+      title: Рамка ограничения размера кости
+      description:
+      - "Настройте или отключите рамку(и) ограничения размера кости."
+      - "- Одна отображает только одну рамку за раз."
+      - "- Несколько отображает рамку для каждой выбранной кости."
+      - "- Отключено полностью отключает рамки."
+      options:
+        single: Одна
+        many: Несколько
+        none: Отключено
+
+    idleAnim:
+      title: Анимация ожидания
+      description:
+      - Название анимации ожидания
+
+    walkAnim:
+      title: Анимация ходьбы
+      description:
+      - Название анимации ходьбы
+
+    attackAnim:
+      title: Анимация атаки
+      description:
+      - Название анимации атаки
+
+    deathAnim:
+      title: Анимация смерти
+      description:
+      - Название анимации смерти
+
+    flyAnim:
+      title: Анимация полёта
+      description:
+      - Название анимации полёта
+
+    invalidAnim: Некорректное имя анимации
+
+  menu:
+    animation:
+      animType:
+        title: "Тип анимации"
+        value:
+          other: "Другое"
+          idle: "Ожидание"
+          walk: "Ходьба"
+          attack: "Атака"
+          death: "Смерть"
+          fly: "Полёт"
+
+  dialogs:
+    boneConfig:
+      title: Настройка кости
+      boneNbt: NBT кости
+      boneType: Тип кости
+      head: Голова
+      normal: Обычная кость
+      leftHandPivot: Опорная точка левой руки
+      rightHandPivot: Опорная точка правой руки
+      hatPivot: Опорная точка шляпы
+      mount: Маунт (используется как место сиденья)
+      locator: Локатор (используется как место эффектов)
+      hitbox: Хитбокс (область для атаки/взаимодействия)
+      hitboxMultiCubeWarning: Вы уверены? У этой кости больше одного куба. Все текстуры будут удалены.
+      headProperties: "Свойства головы"
+      maxHeadRotY: "Максимальный угол головы по Y"
+      maxHeadRotX: "Максимальный угол головы по X"
+    variants:
+      title: Варианты модели
+      description:
+      - Варианты позволяют модели иметь разные "скины", которые можно переключать во время выполнения с помощью функции.
+
+    about:
+      title: Об ItemsAdder Entity
+      description:
+      - Инструмент для администраторов серверов для создания плавных и детализированных анимаций для ItemsAdder (плагин Spigot для Minecraft Java Edition)
+
+      version: Версия
+      buildID: ID сборки
+
+      creators: Создатели
+      discordServer: Присоединяйтесь к моему серверу Discord!
+      githubRepo: Исходный код
+      developers: Разработчики
+      originalDevelopers: Оригинальные разработчики Animated Java
+      originalPluginInfo: Информация об оригинальном плагине Animated Java
+      patrons: Патроны
+      honourableMentions: Почётные упоминания
+
+      fetchbotQuote: '"Пусть java-мобы тоже танцуют!"'
+      snavesutitQuote: '"armor_stand - это любовь, armor_stand - это жизнь."'
+
+      youtuber: Ютубер
+      translator: Переводчик
+      contributor: Участник
+      moderator: Модератор Discord
+      closedBeta: Тестер закрытой беты
+      brandingArtist: Художник брендинга
+      patronTier1: Патрон уровня 1
+      patronTier2: Патрон уровня 2
+      patronTier3: Патрон уровня 3
+
+    animationProperties:
+      animationCompleteCommand:
+        label: Команда окончания анимации
+
+    errors:
+      misc:
+        title: В ItemsAdder Entity произошла неизвестная ошибка
+        body:
+        - |-
+          <textarea style="height: 256px" readonly="readonly">
+          ------ Ошибка ------
+          %errorMessage  //  "%randomErrorMessage"
+          ------ Стек ------
+          %errorStack
+
+          ID сборки: %buildID
+          </textarea>
+        - <p>Пожалуйста, сообщите об этой ошибке на <a href="%githubLink">github ItemsAdder Entity</a>, указав, как её воспроизвести, и приложив копию ошибки выше.</p>
+        - <p>Вы также можете присоединиться к нашему <a href="%discordLink">серверу Discord</a> и задать вопросы в канале animated-java-support.</p>
+        - <p>Спасибо!</p>
+
+      scaleOutOfBounds:
+        title: Масштаб вне допустимых пределов
+        body:
+        - "У кости '%boneName' некорректное масштабирование в одной из ваших анимаций:"
+        - "%displayString"
+
+      topLevelCubes:
+        title: Модель содержит кубы верхнего уровня
+        body:
+        - Все кубы должны находиться внутри группы.
+
+      predicateMergeFailed:
+        title: Не удалось объединить предикат
+        body:
+        - "%reason"
+        - ItemsAdder Entity поддерживает объединение только с моделями предикатов, управляемыми ItemsAdder Entity.
+        - Убедитесь, что вы пытаетесь объединить вашу модель предмета с предикатом с корректной уже существующей моделью предмета с предикатом ItemsAdder Entity.
+        reasons:
+          overridesMissing: Отсутствует список переопределений модели.
+          ajMetaMissing: Файл модели для объединения не является файлом предиката ItemsAdder Entity.
+
+      invalidAnimationSnappingValue:
+        title: Некорректное значение привязки анимации
+        body:
+        - У анимации '%animationName' значение привязки равно %snapping!
+        - Из-за скорости тиков Minecraft ItemsAdder Entity поддерживает только значение привязки 20.
+        - Обновите анимации и ключевые кадры с учётом этого ограничения перед экспортом.
+        - (Возможно, потребуется немного подвигать ключевые кадры на таймлайне, чтобы обновить их привязанное время)
+
+      rigFolderHasUnknownContent:
+        title: Неиспользуемая папка рига
+        body:
+        - В выбранной папке модели рига есть неизвестные файлы.
+        - Уверены, что хотите перезаписать содержимое этой папки вашим ригом?
+        - "Выбранная папка:"
+        - <textarea>%path</textarea>
+        - "Неизвестные файлы:"
+        - <textarea>%files</textarea>
+
+      rigFolderAlreadyUsedByOther:
+        title: Выбранная папка модели рига уже используется
+        body:
+        - В выбранной папке модели рига уже находятся модели другого рига.
+        - Уверены, что хотите перезаписать содержимое этой папки вашим ригом?
+        - "Выбранная папка:"
+        - <textarea>%path</textarea>
+        - "Файлы:"
+        - <textarea>%files</textarea>
+
+      unableToGenerateTexturePath:
+        title: Некорректный путь к текстуре
+        body:
+        - Текстура '%textureName' имеет некорректное расположение внутри ресурс-пака
+        - Убедитесь, что она правильно сохранена внутри корректного ресурс-пака в подпапке 'assets/namespace/textures/'
+        - напр. 'resources/assets/minecraft/textures/item/diamond.png'
+
+      unableToGenerateModelPath:
+        title: Некорректный путь к модели
+        body:
+        - Модель '%modelName' имеет некорректное расположение внутри ресурс-пака
+        - Убедитесь, что она правильно сохранена внутри корректного ресурс-пака в подпапке 'assets/namespace/models/'
+        - напр. 'resources/assets/minecraft/models/item/diamond.json'
+
+      invalidCubeRotations:
+        title: Некорректные повороты элементов
+        body:
+        - Повороты некоторых кубов некорректны для формата java-модели.
+        - Исправьте все некорректные повороты перед экспортом.
+
+      unsavedTexture:
+        title: Несохранённая текстура
+        body:
+        - Текстура '%textureName' не сохранена на диск!
+        - Убедитесь, что она сохранена в корректном расположении ресурс-пака.
+
+      transparentTexturePathNotFound:
+        title: Путь к прозрачной текстуре не задан
+        body:
+        - Похоже, вы пытаетесь использовать варианты с прозрачными текстурами, не задав путь к текстуре!
+        - Нужно настроить путь к прозрачной текстуре в настройках перед экспортом.
+
+      rigModelsExportFolderUndefined:
+        title: Папка модели рига не задана
+        body:
+        - Перед экспортом нужно задать путь к папке модели рига в настройках.
+
+  exporters:
+    #? Generic Exporter Strings
+    generic:
+      progress:
+        writingDataPack: Запись датапака на диск... %progress% | Запись %fileName
+        exportingDataPack: Создание датапака... %progress%
+
+      settings:
+        rootEntityType:
+          title: Тип корневой сущности
+          description:
+          - Тип сущности, используемый как корневая сущность модели
+          errors:
+            invalidEntity: Выбранная сущность не существует!
+
+        rootEntityNbt:
+          title: NBT корневой сущности
+          description:
+          - NBT-данные корневой сущности
+          errors:
+            invalidNbt: Некорректный NBT!
+
+        markerArmorStands:
+          title: Стойки для брони-маркеры
+          description:
+          - Если включено, все armor_stands, используемые для отображения рига, не будут иметь хитбокса или коллизии.
+
+        modelTag:
+          title: Тег модели
+          description:
+          - Тег для выбора модели
+
+        rootTag:
+          title: Корневой тег
+          description:
+          - Тег для выбора корневой сущности статуи
+
+        allBonesTag:
+          title: Тег всех костей
+          description:
+          - Тег для выбора любой или всех костей статуи
+
+        boneModelDisplayTag:
+          title: Тег отображения модели кости
+          description:
+          - Тег для выбора сущностей отображения модели (armor_stands с предметами на голове)
+
+        individualBoneTag:
+          title: Тег отдельной кости
+          description:
+          - Тег для выбора конкретной кости по имени
+
+        internalScoreboardObjective:
+          title: Внутренний scoreboard
+          description:
+          - Название цели scoreboard для внутренних вычислений
+
+        idScoreboardObjective:
+          title: Scoreboard ID модели
+          description:
+          - Название цели scoreboard для определения, какие сущности принадлежат какому экземпляру модели
+
+        exportMode:
+          title: Режим экспорта
+          description:
+          - В какой формат экспортировать. Vanilla экспортирует обычный датапак и ресурс-пак.
+          - MCB экспортирует ресурс-пак и .mc файл для компилятора lang-mc
+          options:
+            mcb: MCB
+            vanilla: Vanilla
+
+        itemsadderItemConfig:
+          title: Файл Lang-mc
+          description:
+          - Путь для экспорта .mc файла
+          - Для сборки экспортированного датапака нужно установить mc-extra в рабочую область MCB
+
+        mcbConfigPath:
+          title: Путь к Lang-mc config.json
+          description:
+          - Экспортирует стандартный MCB config для ItemsAdder Entity
+          - ВНИМАНИЕ! Существующий config.json будет перезаписан
+          errors:
+            mustBeNamedAfterProject: Путь должен заканчиваться файлом с именем %projectName.mc!
+
+    #? Vanilla Statue Exporter
+    vanillaStatue:
+      title: Экспортёр статуй
+
+    #? Vanilla Animation Exporter
+    vanillaAnimation:
+      title: Экспортёр анимаций
+      dialogs:
+        errors:
+          zeroLengthAnimation:
+            title: Анимация нулевой длины
+            body:
+            - Анимация %animationName слишком короткая! Анимации должны длиться не менее 0.05 секунды (или 1 игрового тика)
+
+          noAnimations:
+            title: Нет анимаций
+            body:
+            - Вы ещё не создали ни одной анимации!
+            - Нужно создать анимации во вкладке анимаций, прежде чем экспортировать через экспортёр анимаций.
+          markerNoLoopAnim:
+            message: У этой анимации "Loop Mode" не установлен в "Loop". Измените значение на "Loop" перед установкой маркеров.
+          tooManyMarkers:
+            message: Эта анимация уже содержит 2 маркера "Loop Start/End"! При необходимости щёлкните по ним правой кнопкой, чтобы удалить.
+      settings:
+        frameScoreboardObjective:
+          title: Scoreboard кадров
+          description:
+          - Название цели scoreboard для отслеживания, какой кадр анимации должен воспроизводиться следующим
+
+        animatingFlagScoreboardObjective:
+          title: Scoreboard флага анимации
+          description:
+          - Название цели scoreboard для проверки, активна ли анимация рига
+
+        animationLoopModeScoreboardObjective:
+          title: Scoreboard режима цикла анимации
+          description:
+          - Название цели scoreboard для управления поведением цикла каждой анимации
+      other:
+        addLoopMarker: Добавить маркер начала/конца цикла
+        toggleLoopMarkers: Установить/удалить маркеры начала/конца цикла

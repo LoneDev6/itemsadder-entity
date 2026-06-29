@@ -5,9 +5,15 @@ import { safeFunctionName } from '../util/replace'
 import { settings } from '../settings'
 import { getProjectSaveFolder } from '../util/utilz'
 
-const oldConvertFunc = ModelFormat.prototype.convertTo
+let registered = false
 
-ModelFormat.prototype.convertTo = function convertTo() {
+export function registerModelFormatMod() {
+	if (registered) return
+	registered = true
+
+	const oldConvertFunc = ModelFormat.prototype.convertTo
+
+	ModelFormat.prototype.convertTo = function convertTo() {
 	console.log('Running custom convertTo function')
 	Undo.history.empty()
 	Undo.index = 0
@@ -219,9 +225,11 @@ ModelFormat.prototype.convertTo = function convertTo() {
 	ModelProject.all[selectedProjTabIndex].select()
 }
 
-bus.on(EVENTS.LIFECYCLE.CLEANUP, () => {
-	ModelFormat.prototype.convertTo = oldConvertFunc
-})
+	bus.on(EVENTS.LIFECYCLE.CLEANUP, () => {
+		registered = false
+		ModelFormat.prototype.convertTo = oldConvertFunc
+	})
+}
 
 function fixPivots() {
 

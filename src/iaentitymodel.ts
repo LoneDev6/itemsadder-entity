@@ -2,20 +2,26 @@ import events from './constants/events'
 import { BuildModel } from './mainEntry'
 import { store } from './util/store'
 import { bus } from './util/bus'
-import './bbmods/patchAction'
+import { registerActionPatches } from './bbmods/patchAction'
 import { format as modelFormat } from './modelFormat'
 import { tl } from './util/intl'
 import { settings } from './settings'
 import { registerSettingRenderer } from './ui/dialogs/settings'
-import './ui/mods/boneConfig'
-import './ui/mods/animConfig'
-import './exporters/animationExporter'
-import './bbmods/modelFormatMod'
-import './bbmods/faceTint'
+import { registerBoneConfigMod } from './ui/mods/boneConfig'
+import { registerAnimConfigMod } from './ui/mods/animConfig'
+import { registerVanillaAnimationExporter } from './exporters/animationExporter'
+import { registerModelFormatMod } from './bbmods/modelFormatMod'
+import { registerFaceTintMod } from './bbmods/faceTint'
 // import './util/minecraft/items'
 // import './util/minecraft/entities'
 import { intl } from './util/intl'
 import { CustomError } from './util/customError'
+
+registerActionPatches()
+registerBoneConfigMod()
+registerAnimConfigMod()
+registerModelFormatMod()
+registerFaceTintMod()
 
 const errorMessages = [
 	'Uh oh!',
@@ -108,6 +114,7 @@ delete window['IAENTITY']
 // })
 // @ts-ignore
 window.IAENTITY = IAENTITY
+registerVanillaAnimationExporter(IAENTITY)
 bus.on(events.LIFECYCLE.CLEANUP, () => {
 	console.log('CLEANUP')
 	// @ts-ignore
@@ -117,7 +124,10 @@ bus.on(events.LIFECYCLE.CLEANUP, () => {
 // @ts-ignore
 Blockbench.dispatchEvent('itemsadder-entity-ready', IAENTITY)
 // @ts-ignore
-Blockbench.events['itemsadder-entity-ready'].length = 0
+if (Blockbench.events && Blockbench.events['itemsadder-entity-ready']) {
+	// @ts-ignore
+	Blockbench.events['itemsadder-entity-ready'].length = 0
+}
 
 // WOOO TYPING, YAAAAAAY
 

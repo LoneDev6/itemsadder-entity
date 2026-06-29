@@ -1,2 +1,449 @@
-# please copy the contents of en.yaml to this file before you translate it.
-delete: me #this is required for a successful build
+iaentitymodel:
+  plugin:
+    title: ItemsAdder Entity
+
+  menubar:
+    dropdown: ItemsAdder Entity
+    settings: Nastavení
+    export: Exportovat model
+    about: O aplikaci...
+
+  panels:
+    variants:
+      title: Varianty modelu (neimplementováno)
+      addVariant:
+        title: Přidat variantu
+        description: Přidá do modelu novou variantu
+      back: Zpět
+
+  popups:
+    exportCancelled: Export zrušen!
+    exportInProgress: Probíhá export!
+    noExporterSelected: Nebyl vybrán žádný exportér!
+    successfullyExported: Export byl úspěšný!
+    projectNotSaved: Před exportem projekt uložte!
+
+  progress:
+    animationRendering: Vykreslování animací... %currents/%totals
+
+  settings:
+    header: Nastavení ItemsAdder Entity
+    isGlobal: '(Globální)'
+    isOptional: '(Volitelné)'
+
+    generic:
+      errors:
+        invalid: Pokud vidíte tuto zprávu, ItemsAdder Entity selhal. (Ajaj)
+        emptyValue: Hodnota nesmí být prázdná
+        mustBeBoolean: Hodnota musí být boolean
+        mustBeString: Hodnota musí být string
+        missingFormatString: Hodnotě chybí povinný formátovací řetězec %notFound
+        invalidEntityTag: Hodnota není platný tag entity
+
+    playerAnimationsName:
+      errors:
+        invalidFunctionName: Soubor animací hráče není platný!
+
+    namespace:
+      title: Namespace entity
+      description:
+      - Namespace vaší entity.
+      errors:
+        invalidFunctionName: Namespace entity není platný!
+
+    projectName:
+      title: ID entity
+      description:
+      - Jedinečné ID vaší entity.
+      errors:
+        invalidFunctionName: ID entity není platné!
+
+    modelScalingMode:
+      title: Režim škálování modelu
+      description:
+      - Maximální velikost modelu umožňuje modely o rozměrech 7x7x7 bloků, ale omezuje škálování pouze na zmenšování.
+      - Maximální rozsah škálování umožňuje zmenšování i zvětšování až na 3.125x velikosti, ale omezuje maximální velikost modelu na 3x3x3 bloky
+      options:
+        3x3x3: Max. škálování
+        7x7x7: Max. velikost modelu
+
+    verbose:
+      title: Podrobné logování
+      description:
+      - Určuje vybranému exportéru, zda má exportovat dodatečné ladicí/chybové zprávy.
+      - Ovlivňuje hlavně exportéry soch a animací.
+
+    transparentTexturePath:
+      title: Cesta k transparentní textuře
+      description:
+      - Transparentní textura pro přidání průhlednosti do variant. Je potřeba pouze tehdy, pokud ve variantách používáte průhlednost.
+      errors:
+        undefinedWhenNeeded: Pokud používáte funkci průhlednosti variant, musí být cesta definována!
+
+    useCache:
+      title: Použít cache animací
+      description:
+      - Znovu vykreslovat pouze změněné animace
+
+    addsAdditionalModels:
+      title: Povolit další modely v animaci hráče
+      description:
+      - Povolte tuto možnost, pokud jste do scény přidali nové kosti/modely (například doplňky, jiné entity, předměty...)
+
+    cacheMode:
+      title: Režim cache animací
+      description:
+      - Cache animací umožňuje znovu vykreslovat pouze animace, které se od posledního exportu změnily. Opakované exporty jsou tak mnohem rychlejší, zejména u větších modelů.
+      - "- Režim paměti je rychlejší, ale používá více paměti pro uložení cache."
+      - "- Režim disku je pomalejší, ale ukládá cache na disk, aby šetřil paměť."
+      options:
+        memory: Režim paměti
+        disk: Režim disku
+
+    rotationMode:
+      title: Režim rotace
+      description:
+      - "ItemsAdder nabízí dva režimy rotace kostí."
+      - "Musíte je zvolit podle toho, co bude vaše entita dělat:"
+      - " - Plynulý: vhodný pro NPC a entity, které se nebudou pohybovat příliš rychle a mají jen několik kostí."
+      - " - Přesný: vhodný pro moby s mnoha kostmi a/nebo pro ty, kteří se pohybují velmi rychle (například běh, skok, let, bossové se složitými útoky a podobně)."
+      options:
+        smooth: Plynulý
+        precise: Přesný
+
+    boundingBoxRenderMode:
+      title: Limitní box velikosti kosti
+      description:
+      - "Nakonfigurujte nebo vypněte limitní box(y) velikosti kosti."
+      - "- Jeden zobrazí vždy jen jeden box."
+      - "- Více zobrazí box pro každou vybranou kost."
+      - "- Vypnuto ho zcela vypne."
+      options:
+        single: Jeden
+        many: Více
+        none: Vypnuto
+
+    idleAnim:
+      title: Animace nečinnosti
+      description:
+      - Název animace nečinnosti
+
+    walkAnim:
+      title: Animace chůze
+      description:
+      - Název animace chůze
+
+    attackAnim:
+      title: Animace útoku
+      description:
+      - Název animace útoku
+
+    deathAnim:
+      title: Animace smrti
+      description:
+      - Název animace smrti
+
+    flyAnim:
+      title: Animace letu
+      description:
+      - Název animace letu
+
+    invalidAnim: Neplatný název animace
+
+  menu:
+    animation:
+      animType:
+        title: "Typ animace"
+        value:
+          other: "Jiné"
+          idle: "Nečinnost"
+          walk: "Chůze"
+          attack: "Útok"
+          death: "Smrt"
+          fly: "Let"
+
+  dialogs:
+    boneConfig:
+      title: Konfigurace kosti
+      boneNbt: NBT kosti
+      boneType: Typ kosti
+      head: Hlava
+      normal: Obecná kost
+      leftHandPivot: Pivot levé ruky
+      rightHandPivot: Pivot pravé ruky
+      hatPivot: Pivot klobouku
+      mount: Mount (používá se jako pozice sedadla)
+      locator: Lokátor (používá se jako pozice efektů)
+      hitbox: Hitbox (oblast, kterou lze napadnout nebo s ní interagovat)
+      hitboxMultiCubeWarning: Opravdu? Tato kost má více než jednu kostku. Všechny textury budou odstraněny.
+      headProperties: "Vlastnosti hlavy"
+      maxHeadRotY: "Max. úhel hlavy Y"
+      maxHeadRotX: "Max. úhel hlavy X"
+    variants:
+      title: Varianty modelu
+      description:
+      - Varianty umožňují, aby model měl různé "skiny", které lze během běhu vyměnit pomocí funkce.
+
+    about:
+      title: O ItemsAdder Entity
+      description:
+      - Nástroj pro správce serverů k vytváření plynulých a detailních animací pro ItemsAdder (Spigot plugin pro Minecraft Java Edition)
+
+      version: Verze
+      buildID: Build ID
+
+      creators: Tvůrci
+      discordServer: Připojte se na můj Discord server!
+      githubRepo: Zdrojový kód
+      developers: Vývojáři
+      originalDevelopers: Původní vývojáři Animated Java
+      originalPluginInfo: Informace o původním pluginu Animated Java
+      patrons: Patroni
+      honourableMentions: Čestná zmínění
+
+      fetchbotQuote: '"Ať java mobové taky tančí!"'
+      snavesutitQuote: '"armor_stand je láska, armor_stand je život."'
+
+      youtuber: YouTuber
+      translator: Překladatel
+      contributor: Přispěvatel
+      moderator: Discord moderátor
+      closedBeta: Tester uzavřené bety
+      brandingArtist: Autor brandingu
+      patronTier1: Patron úrovně 1
+      patronTier2: Patron úrovně 2
+      patronTier3: Patron úrovně 3
+
+    animationProperties:
+      animationCompleteCommand:
+        label: Příkaz na konci animace
+
+    errors:
+      misc:
+        title: V ItemsAdder Entity došlo k neznámé chybě
+        body:
+        - |-
+          <textarea style="height: 256px" readonly="readonly">
+          ------ Chyba ------
+          %errorMessage  //  "%randomErrorMessage"
+          ------ Stack ------
+          %errorStack
+
+          Build ID: %buildID
+          </textarea>
+        - <p>Nahlaste prosím tuto chybu na <a href="%githubLink">GitHubu ItemsAdder Entity</a> s informacemi, jak ji reprodukovat, a kopií chyby výše.</p>
+        - <p>Můžete se také připojit na náš <a href="%discordLink">Discord server</a> a ptát se v kanálu animated-java-support.</p>
+        - <p>Děkujeme!</p>
+
+      scaleOutOfBounds:
+        title: Škálování mimo rozsah
+        body:
+        - "Kost '%boneName' má v jedné z vašich animací neplatné škálování:"
+        - "%displayString"
+
+      topLevelCubes:
+        title: Model obsahuje kostky na nejvyšší úrovni
+        body:
+        - Všechny kostky musí být uvnitř skupiny.
+
+      predicateMergeFailed:
+        title: Sloučení predikátu selhalo
+        body:
+        - "%reason"
+        - ItemsAdder Entity podporuje slučování pouze do modelů predikátů řízených ItemsAdder Entity.
+        - Ujistěte se, že se pokoušíte sloučit model predikátové položky s platným existujícím modelem predikátové položky ItemsAdder Entity.
+        reasons:
+          overridesMissing: Chybí seznam overrides modelu.
+          ajMetaMissing: Soubor modelu, do kterého se má slučovat, není soubor predikátu ItemsAdder Entity.
+
+      invalidAnimationSnappingValue:
+        title: Neplatná hodnota přichytávání animace
+        body:
+        - Animace '%animationName' má hodnotu přichytávání %snapping!
+        - Kvůli rychlosti ticků Minecraftu podporuje ItemsAdder Entity pouze hodnotu přichytávání 20.
+        - Před exportem upravte animace a keyframy tak, aby toto omezení respektovaly.
+        - (Možná budete muset s keyframy na časové ose trochu pohnout, aby se aktualizoval jejich přichycený čas)
+
+      rigFolderHasUnknownContent:
+        title: Nepoužitá složka rigu
+        body:
+        - Složka, kterou jste vybrali jako složku modelu rigu, obsahuje neznámé soubory.
+        - Opravdu chcete přepsat obsah této složky svým rigem?
+        - "Vybraná složka:"
+        - <textarea>%path</textarea>
+        - "Neznámé soubory:"
+        - <textarea>%files</textarea>
+
+      rigFolderAlreadyUsedByOther:
+        title: Vybraná složka modelu rigu se již používá
+        body:
+        - Složka, kterou jste vybrali jako složku modelu rigu, již obsahuje modely jiného rigu.
+        - Opravdu chcete přepsat obsah této složky svým rigem?
+        - "Vybraná složka:"
+        - <textarea>%path</textarea>
+        - "Soubory:"
+        - <textarea>%files</textarea>
+
+      unableToGenerateTexturePath:
+        title: Neplatná cesta k textuře
+        body:
+        - Textura '%textureName' má neplatné umístění uvnitř Resource Packu
+        - Ujistěte se, že je správně uložena v platném Resource Packu v podsložce 'assets/namespace/textures/'
+        - např. 'resources/assets/minecraft/textures/item/diamond.png'
+
+      unableToGenerateModelPath:
+        title: Neplatná cesta k modelu
+        body:
+        - Model '%modelName' má neplatné umístění uvnitř Resource Packu
+        - Ujistěte se, že je správně uložen v platném Resource Packu v podsložce 'assets/namespace/models/'
+        - např. 'resources/assets/minecraft/models/item/diamond.json'
+
+      invalidCubeRotations:
+        title: Neplatné rotace elementů
+        body:
+        - Rotace některých kostek nejsou platné pro formát java modelu.
+        - Před exportem opravte všechny neplatné rotace.
+
+      unsavedTexture:
+        title: Neuložená textura
+        body:
+        - Textura '%textureName' není uložena na disk!
+        - Ujistěte se, že je uložena v platném umístění Resource Packu.
+
+      transparentTexturePathNotFound:
+        title: Cesta k transparentní textuře není definována
+        body:
+        - Vypadá to, že se pokoušíte použít varianty s transparentními texturami bez definování cesty k textuře!
+        - Před exportem musíte v nastavení nakonfigurovat cestu k transparentní textuře.
+
+      rigModelsExportFolderUndefined:
+        title: Složka modelů rigu není definována
+        body:
+        - Před exportem musíte v nastavení definovat cestu ke složce modelů rigu.
+
+  exporters:
+    #? Generic Exporter Strings
+    generic:
+      progress:
+        writingDataPack: Zápis Data Packu na disk... %progress% | Zapisuje se %fileName
+        exportingDataPack: Generování Data Packu... %progress%
+
+      settings:
+        rootEntityType:
+          title: Typ kořenové entity
+          description:
+          - Typ entity, který se má použít jako kořenová entita modelu
+          errors:
+            invalidEntity: Vybraná entita neexistuje!
+
+        rootEntityNbt:
+          title: NBT kořenové entity
+          description:
+          - NBT data kořenové entity
+          errors:
+            invalidNbt: Neplatné NBT!
+
+        markerArmorStands:
+          title: Marker Armor Standy
+          description:
+          - Pokud je povoleno, všechny armor_stands použité k zobrazení rigu nebudou mít hitbox ani kolizi.
+
+        modelTag:
+          title: Tag modelu
+          description:
+          - Tag použitý k výběru modelu
+
+        rootTag:
+          title: Kořenový tag
+          description:
+          - Tag použitý k výběru kořenové entity sochy
+
+        allBonesTag:
+          title: Tag všech kostí
+          description:
+          - Tag použitý k výběru libovolných nebo všech kostí sochy
+
+        boneModelDisplayTag:
+          title: Tag zobrazení modelu kosti
+          description:
+          - Tag použitý k výběru entit zobrazujících model (armor_stands s předměty na hlavách)
+
+        individualBoneTag:
+          title: Tag jednotlivé kosti
+          description:
+          - Tag použitý k výběru konkrétní kosti podle názvu
+
+        internalScoreboardObjective:
+          title: Interní scoreboard
+          description:
+          - Název scoreboard objective používaného pro interní výpočty
+
+        idScoreboardObjective:
+          title: Scoreboard ID modelu
+          description:
+          - Název scoreboard objective používaného k určení, které entity patří ke které instanci modelu
+
+        exportMode:
+          title: Režim exportu
+          description:
+          - Do jakého formátu exportovat. Vanilla exportuje běžný Data Pack a Resource Pack.
+          - MCB exportuje Resource Pack a soubor .mc pro kompilátor lang-mc
+          options:
+            mcb: MCB
+            vanilla: Vanilla
+
+        itemsadderItemConfig:
+          title: Soubor lang-mc
+          description:
+          - Cesta, kam exportovat soubor .mc
+          - Aby bylo možné exportovaný data pack sestavit, musíte do svého MCB workspace nainstalovat mc-extra
+
+        mcbConfigPath:
+          title: Cesta k lang-mc config.json
+          description:
+          - Exportuje výchozí MCB config pro ItemsAdder Entity
+          - VAROVÁNÍ! Přepíše existující config.json
+          errors:
+            mustBeNamedAfterProject: Cesta musí končit souborem pojmenovaným %projectName.mc!
+
+    #? Vanilla Statue Exporter
+    vanillaStatue:
+      title: Exportér sochy
+
+    #? Vanilla Animation Exporter
+    vanillaAnimation:
+      title: Exportér animací
+      dialogs:
+        errors:
+          zeroLengthAnimation:
+            title: Animace s nulovou délkou
+            body:
+            - Animace %animationName je příliš krátká! Animace musí být dlouhé alespoň 0.05 sekundy (nebo 1 herní tick)
+
+          noAnimations:
+            title: Žádné animace
+            body:
+            - Nevytvořili jste žádné animace!
+            - Před exportem pomocí exportéru animací musíte v záložce animací vytvořit nějaké animace.
+          markerNoLoopAnim:
+            message: Tato animace nemá "Loop Mode" nastavený na "Loop". Před nastavením markerů změňte hodnotu na "Loop".
+          tooManyMarkers:
+            message: Tato animace už obsahuje 2 markery "Loop Start/End"! Pokud je potřebujete odstranit, klikněte na ně pravým tlačítkem.
+      settings:
+        frameScoreboardObjective:
+          title: Scoreboard snímků
+          description:
+          - Název scoreboard objective používaného ke sledování, který snímek animace se má přehrát jako další
+
+        animatingFlagScoreboardObjective:
+          title: Scoreboard příznaku animace
+          description:
+          - Název scoreboard objective používaného ke zjištění, zda se rig právě animuje
+
+        animationLoopModeScoreboardObjective:
+          title: Scoreboard režimu smyčky animace
+          description:
+          - Název scoreboard objective používaného k ovládání chování smyčky každé animace
+      other:
+        addLoopMarker: Přidat marker začátku/konce smyčky
+        toggleLoopMarkers: Nastavit/odstranit markery začátku/konce smyčky

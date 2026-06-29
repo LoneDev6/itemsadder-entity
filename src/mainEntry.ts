@@ -11,16 +11,17 @@ import { registerPluginDefinition } from './pluginDefinitions'
 import './rotationSnap'
 import './ui/panel/states'
 import './ui/dialogs/settings'
-import { bus } from './util/bus'
 import { store } from './util/store'
 import { ERROR } from './util/errors'
-import EVENTS from './constants/events'
 import { CustomError } from './util/customError'
-import { CustomAction } from './util/customAction'
 import { format as modelFormat } from './modelFormat'
 import { renderAnimation } from './animationRenderer'
-import { DefaultSettings, settings } from './settings'
-import {getModelExportFolder, needsToExportJsonsModels, isInternalElement} from "./util/utilz";
+import { settings } from './settings'
+import {getAdvancedPlayerModelExportFolder, getModelExportFolder, needsToExportJsonsModels, isInternalModel} from "./util/utilz";
+import { configurePlayerEmoteEditing, restoreHiddenUI } from './ui/mods/playerEmoteEditing'
+import { registerInternalBoneProtection } from './ui/mods/internalBoneProtection'
+import { registerMainMenu } from './ui/menu/mainMenu'
+import { registerProjectUiHandlers } from './ui/mods/projectUiHandlers'
 
 // import { makeArmorStandModel } from './makeArmorStandModel'
 
@@ -30,44 +31,38 @@ import {
 } from './exporting'
 
 import {
+	computeBones,
 	computeElements,
 	computeModels,
-	computeVariantTextureOverrides,
-	computeBones,
-	computeVariantModels,
 	computeScaleModels,
+	computeVariantModels,
+	computeVariantTextureOverrides,
 } from './modelComputation'
 
 registerLanguages()
 registerLifecycleRedirects()
 registerPluginDefinition()
-checkForUpdates();
+checkForUpdates()
+configurePlayerEmoteEditing(settings)
+registerInternalBoneProtection()
 
 export const BuildModel = (callback: any, options: any) => {
 	if (!IAENTITY.exportInProgress) {
 		IAENTITY.exportInProgress = true
 		computeAnimationData(callback, options)
-			.then(() => {
-				IAENTITY.exportInProgress = false
-			})
 			.catch((e) => {
-				IAENTITY.exportInProgress = false
-				Blockbench.setProgress(0)
-				if (
-					e instanceof CustomError &&
-					e.options.intentional &&
-					e.options.silent
-				) {
-					// @ts-ignore
-					Blockbench.showQuickMessage(
-						tl('iaentitymodel.popups.exportCancelled')
-					)
-					console.log('Intentional Error:', e.message)
-					throw e
+				if (e instanceof CustomError) {
+					if (!e.options.intentional) {
+						console.log('Custom Error:')
+						throw e
+					}
 				} else {
 					console.log('Unknown Error:')
 					throw e
 				}
+			})
+			.finally(() => {
+				IAENTITY.exportInProgress = false
 			})
 	} else {
 		Blockbench.showQuickMessage(tl('iaentitymodel.popups.exportInProgress'))
@@ -83,25 +78,44 @@ async function computeAnimationData(
 
 	if(isInternalModel(settings)) {
 		// Or getModelExportFolder won't work
+		if (!Project) return
+		const lastProjectSavePath = store.get('lastProjectSavePath')
+		if (!Project.save_path && Project.export_path) {
+			Project.save_path = Project.export_path
+		}
+		if (!Project.save_path && lastProjectSavePath) {
+			Project.save_path = lastProjectSavePath
+		}
 		if(!Project.save_path) {
+			Blockbench.showQuickMessage(tl('iaentitymodel.popups.projectNotSaved'))
 			return;
 		}
 
 		const modelExportFolder = getModelExportFolder(settings)
+		const advancedModelExportFolder = needsToExportJsonsModels(settings)
+			? getAdvancedPlayerModelExportFolder(settings)
+			: modelExportFolder
 		// Both files exists and it's not good!
 		if(
 			(needsToExportJsonsModels(settings) && fs.existsSync(`${modelExportFolder}/.player_animations`)) ||
-			(!needsToExportJsonsModels(settings) && fs.existsSync(`${modelExportFolder}/.player_advanced_animations`))
+			(!needsToExportJsonsModels(settings) && fs.existsSync(`${advancedModelExportFolder}/.player_advanced_animations`))
 		) {
 			// Delete all useless files.
-			fs.readdirSync(
-				modelExportFolder
-			).forEach(f => {
-				// To be 100% sure we are not deleting files which the user might have put there because they are an idiot.
-				if(f.endsWith(".json") || f.endsWith(".player_animations") || f.endsWith(".player_advanced_animations")) {
-					fs.rmSync(`${modelExportFolder}/${f}`)
-				}
-			});
+			new Set([modelExportFolder, advancedModelExportFolder]).forEach(folder => {
+				fs.readdirSync(folder).forEach(f => {
+					// To be 100% sure we are not deleting files which the user might have put there because they are an idiot.
+					if(f.endsWith(".json") || f.endsWith(".player_animations") || f.endsWith(".player_advanced_animations")) {
+						fs.rmSync(`${folder}/${f}`)
+					}
+				});
+			})
+		}
+
+		if (needsToExportJsonsModels(settings) && advancedModelExportFolder !== modelExportFolder) {
+			const staleAdvancedAnimationFile = `${modelExportFolder}/.player_advanced_animations`
+			if (fs.existsSync(staleAdvancedAnimationFile)) {
+				fs.rmSync(staleAdvancedAnimationFile)
+			}
 		}
 	}
 
@@ -112,7 +126,6 @@ async function computeAnimationData(
 		models
 	) as aj.VariantTextureOverrides
 	const bones = computeBones(models, animations) as aj.BoneObject
-	// const [variantModels, variantTouchedModels] = await computeVariantModels(models, variantTextureOverrides)
 	const scaleModels = computeScaleModels(bones)
 	const variants = (await computeVariantModels(
 		models,
@@ -124,11 +137,6 @@ async function computeAnimationData(
 		variantTouchedModels: aj.variantTouchedModels
 	}
 
-	// const flatVariantModels = {}
-	// Object.values(variantModels).forEach(variant => Object.entries(variant).forEach(([k,v]) => flatVariantModels[k] = v))
-	// console.log('Flat Variant Models:', flatVariantModels)
-
-	//if(!isInternalModel(settings)) {
 	if(needsToExportJsonsModels(settings)) {
 		await exportRigModels(models, variants.variantModels, scaleModels)
 		if (settings.iaentitymodel.transparentTexturePath) {
@@ -149,276 +157,16 @@ async function computeAnimationData(
 	}
 	console.groupEnd()
 	console.groupCollapsed('Exporter Output')
-	await callback(data)
-	console.groupEnd()
-}
-
-import { show_settings } from './ui/dialogs/settings'
-import { show_about } from './ui/dialogs/about'
-
-const menu: any = new BarMenu(
-	'iaentitymodel',
-	[],
-	() => Format.id === modelFormat.id
-)
-menu.label.style.display = 'none'
-document.querySelector('#menu_bar').appendChild(menu.label)
-
-function safeQuerySelector(selector, fallback = undefined) {
-	let a = document.querySelector(selector)
-	if(!a && fallback)
-		a = document.querySelector(fallback)
-	return a
-}
-
-let prevAnimationTabTitle = "ANIMATIONS";
-function hideEditPaintTabs() {
-	// @ts-ignore // Hide the texture editor tab
-	safeQuerySelector("#mode_selector > li:nth-child(2)")?.style.setProperty("display",  "none")
-	// @ts-ignore
-	safeQuerySelector(".tool.resize_tool")?.style.setProperty("display",  "none")
-	// @ts-ignore
-	safeQuerySelector(".tool.pivot_tool")?.style.setProperty("display",  "none")
-
-	// @ts-ignore
-	if(Modes.options.edit.selected) {
-		// @ts-ignore // Hide the add cube button
-		safeQuerySelector(".tool.add_cube")?.style.setProperty("display",  "none")
-		// @ts-ignore // Hide the textures bottom left panel
-		safeQuerySelector("#textures", "#panel_textures")?.style.setProperty("display",  "none")
-		// @ts-ignore // Hide the UV bottom left panel
-		safeQuerySelector("#uv", "#panel_uv")?.style.setProperty("display",  "none")
-
-		let animationsTitle = safeQuerySelector("#animations > h3 > label", "#panel_animations > h3 > label > span")
-		if(animationsTitle) {
-			// @ts-ignore
-			prevAnimationTabTitle = animationsTitle.innerText
-			// @ts-ignore
-			animationsTitle.innerText = "PLAYER EMOTES"
-		}
+	try {
+		await callback(data)
+	} finally {
+		console.groupEnd()
 	}
 }
 
-function restoreEditPaintTabs() {
-	// @ts-ignore // Show the texture editor tab
-	safeQuerySelector("#mode_selector > li:nth-child(2)")?.style.removeProperty("display")
-	// @ts-ignore
-	safeQuerySelector(".tool.resize_tool")?.style.removeProperty("display")
-	// @ts-ignore
-	safeQuerySelector(".tool.pivot_tool")?.style.removeProperty("display")
-
-	// @ts-ignore
-	if(Modes.options.edit.selected) {
-		// @ts-ignore // Show the add cube button
-		safeQuerySelector(".tool.add_cube")?.style.removeProperty("display")
-		// @ts-ignore // Show the textures bottom left panel
-		safeQuerySelector("#textures", "#panel_textures")?.style.removeProperty("display")
-		// @ts-ignore // Show the UV bottom left panel
-		safeQuerySelector("#uv", "#panel_uv")?.style.removeProperty("display")
-
-		let animationsTitle = safeQuerySelector("#animations > h3 > label", "#panel_animations > h3 > label > span")
-		if(animationsTitle) {
-			// @ts-ignore
-			animationsTitle.innerText = prevAnimationTabTitle
-		}
-	}
-}
-
-function restoreHiddenUI() {
-	// Show the "variable placeholders" panel under the keyframe coords
-	// @ts-ignore
-	Interface.Panels.variable_placeholders.node.style.visibility = "visible"
-
-	// @ts-ignore
-	Modes.options.edit.select()
-	restoreEditPaintTabs()
-}
+const menu = registerMainMenu()
 global.LONEDEV_DEBUG_restoreHiddenUI = restoreHiddenUI
-
-// @ts-ignore
-Blockbench.on('select_project', () => {
-	queueMicrotask(() => {
-		console.log('selected', Format.id !== modelFormat.id)
-		menu.label.style.display = Format.id !== modelFormat.id ? 'none' : 'inline-block'
-
-		if(Format.id === modelFormat.id) {
-
-			if(!global?.LONEDEV_DEBUG) {
-				refreshGroupsProperties()
-				// Hide the "variable placeholders" panel under the keyframe coords
-				// @ts-ignore
-				Interface.Panels.variable_placeholders.node.style.visibility = "hidden"
-
-				/*if (isInternalModel(settings)) {
-					// @ts-ignore
-					Modes.options.animate.select()
-					hideEditPaintTabs()
-				} else {*/
-					// @ts-ignore
-					Modes.options.edit.select()
-					restoreEditPaintTabs()
-				//}
-
-				// Hide the sus bone
-				// @ts-ignore
-				let susbone = document.querySelector("#\\37 7440795-2e48-1bbd-3fee-ed8401fb4688");
-				if (susbone) {
-					// @ts-ignore
-					susbone.style.setProperty("display",  "none")
-
-					// @ts-ignore
-					Group.uuids['77440795-2e48-1bbd-3fee-ed8401fb4688'].children.forEach(c => c.visibility = false);
-					Canvas.updateVisibility()
-				}
-			}
-		}
-		else {
-			restoreHiddenUI()
-		}
-	})
-})
-// @ts-ignore
-Blockbench.on('add_group', () => {
-	if(Format.id === modelFormat.id) {
-		refreshGroupsProperties()
-	}
-})
-// @ts-ignore
-Blockbench.on('group_elements', () => {
-	if(Format.id === modelFormat.id) {
-		refreshGroupsProperties()
-	}
-})
-// @ts-ignore
-Blockbench.on('add_cube', () => {
-	if(Format.id === modelFormat.id) {
-		refreshGroupsProperties()
-
-		/*if(isInternalModel(settings)) {
-			alert("This is not currently supported. You can only add bones and mark them to `locator`. Please delete the cube.")
-		}*/
-	}
-})
-
-
-{
-	// Intercept removal of element and cancel it if it's an internal element.
-	let old = OutlinerNode.prototype.remove;
-    OutlinerNode.prototype.remove = new Proxy(old, {
-      apply: function(target, thisArg, argumentsList) {
-        console.log("Tried to remove an element.");
-		if(isInternalElement(thisArg.name) || isInternalElement(thisArg.parent.name))
-		{
-			console.log("Cancelled removal of internal bone.");
-			alert("You can't delete builtin entity bones.")
-			// Use exception instead of return to cancel the whole chain removal of sub-elements
-			// or it would spam one msgbox for each child element.
-			throw new Error('You can\'t delete builtin entity bones.'); 
-		}
-
-        return target.call(thisArg);
-      }
-    });
-}
-
-Blockbench.on('select_mode', () => {
-	refreshGroupsProperties()
-	/*if(isInternalModel(settings)) {
-		hideEditPaintTabs()
-	}
-	else {*/
-		restoreEditPaintTabs()
-	//}
-
-	global.invalidCubeNotification?.delete();
-	delete global.invalidCubeNotification;
-})
-
-// Dirty
-document.body.addEventListener('click', () => {
-	refreshGroupsProperties()
-}, true);
-
-// @ts-ignore
-Blockbench.on('unselect_project', () => {
-	menu.label.style.display = 'none'
-})
-// @ts-ignore
-import logo from './assets/itemsadder_icon.png'
-import {isInternalModel, refreshGroupsProperties} from './util/utilz'
-import { safeFunctionName } from './util/replace'
-menu.label.innerHTML = tl('iaentitymodel.menubar.dropdown')
-let img = document.createElement('img')
-img.src = logo
-img.width = 16
-img.height = 16
-img.style.position = 'relative'
-img.style.top = '2px'
-img.style.borderRadius = '8px'
-img.style.marginRight = '5px'
-menu.label.prepend(img)
-
-MenuBar.addAction(
-	CustomAction('iaentitymodel_settings', {
-		icon: 'settings',
-		category: 'iaentitymodel',
-		name: tl('iaentitymodel.menubar.settings'),
-		condition: () => modelFormat.id === Format.id /*&& !isInternalModel(settings)*/,
-		click: function () {
-			show_settings()
-		},
-	}),
-	'iaentitymodel'
-)
-MenuBar.addAction(
-	{
-		// @ts-ignore
-		name: tl('iaentitymodel.menubar.export'),
-		id: 'iaentitymodel.export',
-		icon: 'insert_drive_file',
-		condition: () => modelFormat.id === Format.id,
-		click: () => {
-			if(!Project.saved || (!Project.save_path || Project.save_path === "")) {
-				Blockbench.showQuickMessage(tl('iaentitymodel.popups.projectNotSaved'))
-				return;
-			}
-
-			// Call the selected exporter.
-			// @ts-ignore
-			store.getStore('exporters').get("vanillaAnimationExporter")()
-		},
-		keybind: new Keybind({
-			key: 120, // f9
-		}),
-	},
-	'iaentitymodel'
-)
-MenuBar.addAction(
-	CustomAction('iaentitymodel_about', {
-		icon: 'help',
-		category: 'iaentitymodel',
-		name: tl('iaentitymodel.menubar.about'),
-		condition: () => modelFormat.id === Format.id,
-		click: function () {
-			show_about()
-		},
-	}),
-	'iaentitymodel'
-)
-MenuBar.update()
-const cb = () => {
-	store.set('states', { default: {} })
-	settings.update(DefaultSettings, true)
-	bus.dispatch(EVENTS.LIFECYCLE.LOAD_MODEL, {})
-}
-Blockbench.on('new_project', cb)
-bus.on(EVENTS.LIFECYCLE.CLEANUP, () => {
-	menu.label.remove()
-	// @ts-ignore
-	Blockbench.removeListener('new_project', cb)
-	// @ts-ignore
-	Blockbench.removeListener('select_mode', cb)
-})
+registerProjectUiHandlers(menu)
 
 
 new Property(KeyframeDataPoint, 'string', 'name', {label: "Name", condition: point => Format.id === modelFormat.id && ['particle', 'sound'].includes(point.keyframe.channel), default: "minecraft:XXXXX"},);

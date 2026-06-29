@@ -8,21 +8,9 @@ const MINECRAFT_ASSETS_FILE_BASE_URL = 'https://assets.mcasset.cloud'
 const MOJANG_VERSION_MANIFEST_URL = 'https://piston-meta.mojang.com/mc/game/version_manifest_v2.json'
 const VANILLA_TEXTURE_PREVIEW_ID = 'iaentitymodel_vanilla_texture_preview'
 
-// const originalFaceTintCondition = BarItems.face_tint.condition
-// const originalFaceTintSliderCondition = BarItems.slider_face_tint.condition
-BarItems.face_tint.condition = () =>
-	!Project.box_uv &&
-	(Format.id === 'java_block' || Format.id === modelFormat.id) &&
-	Cube.selected.length &&
-	UVEditor.selected_faces[0] &&
-	Cube.selected[0].faces[UVEditor.selected_faces[0]]
-
-BarItems.slider_face_tint.condition = () =>
-	!Project.box_uv &&
-	(Format.id === 'java_block' || Format.id === modelFormat.id) &&
-	Cube.selected.length &&
-	UVEditor.selected_faces[0] &&
-	Cube.selected[0].faces[UVEditor.selected_faces[0]]
+let registered = false
+let originalFaceTintCondition
+let originalFaceTintSliderCondition
 
 function getListUrl(version, relativePath) {
 	return `${MINECRAFT_ASSETS_RAW_BASE_URL}/${version}/assets/minecraft/textures/${relativePath ? `${relativePath}/` : ''}_list.json`
@@ -221,10 +209,35 @@ function registerVanillaTextureToolbarAction() {
 	}
 }
 
-MenuBar.addAction(addVanillaTextureAction, 'iaentitymodel')
-registerVanillaTextureToolbarAction()
-setTimeout(registerVanillaTextureToolbarAction, 0)
-bus.on(EVENTS.LIFECYCLE.LOAD, registerVanillaTextureToolbarAction)
-bus.on(EVENTS.LIFECYCLE.CLEANUP, () => {
-	addVanillaTextureAction.delete()
-})
+export function registerFaceTintMod() {
+	if (registered) return
+	registered = true
+	originalFaceTintCondition = BarItems.face_tint.condition
+	originalFaceTintSliderCondition = BarItems.slider_face_tint.condition
+
+	BarItems.face_tint.condition = () =>
+		!Project.box_uv &&
+		(Format.id === 'java_block' || Format.id === modelFormat.id) &&
+		Cube.selected.length &&
+		UVEditor.selected_faces[0] &&
+		Cube.selected[0].faces[UVEditor.selected_faces[0]]
+
+	BarItems.slider_face_tint.condition = () =>
+		!Project.box_uv &&
+		(Format.id === 'java_block' || Format.id === modelFormat.id) &&
+		Cube.selected.length &&
+		UVEditor.selected_faces[0] &&
+		Cube.selected[0].faces[UVEditor.selected_faces[0]]
+
+	MenuBar.addAction(addVanillaTextureAction, 'iaentitymodel')
+	registerVanillaTextureToolbarAction()
+	setTimeout(registerVanillaTextureToolbarAction, 0)
+	bus.on(EVENTS.LIFECYCLE.LOAD, registerVanillaTextureToolbarAction)
+	bus.on(EVENTS.LIFECYCLE.CLEANUP, () => {
+		registered = false
+		vanillaTextureToolbarRegistered = false
+		BarItems.face_tint.condition = originalFaceTintCondition
+		BarItems.slider_face_tint.condition = originalFaceTintSliderCondition
+		addVanillaTextureAction.delete()
+	})
+}

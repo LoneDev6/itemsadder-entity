@@ -1,2 +1,449 @@
-# please copy the contents of en.yaml to this file before you translate it.
-delete: me #this is required for a successful build
+iaentitymodel:
+  plugin:
+    title: ItemsAdder Entity
+
+  menubar:
+    dropdown: ItemsAdder Entity
+    settings: Ustawienia
+    export: Eksportuj model
+    about: O programie...
+
+  panels:
+    variants:
+      title: Warianty modelu (niezaimplementowane)
+      addVariant:
+        title: Dodaj wariant
+        description: Dodaje nowy wariant do modelu
+      back: Wstecz
+
+  popups:
+    exportCancelled: Eksport anulowany!
+    exportInProgress: Eksport trwa!
+    noExporterSelected: Nie wybrano eksportera!
+    successfullyExported: Eksport zakończony pomyślnie!
+    projectNotSaved: Zapisz projekt przed eksportem!
+
+  progress:
+    animationRendering: Renderowanie animacji... %currents/%totals
+
+  settings:
+    header: Ustawienia ItemsAdder Entity
+    isGlobal: '(Globalne)'
+    isOptional: '(Opcjonalne)'
+
+    generic:
+      errors:
+        invalid: Jeśli widzisz ten komunikat, ItemsAdder Entity uległ awarii. (Ups)
+        emptyValue: Wartość nie może być pusta
+        mustBeBoolean: Wartość musi być typu boolean
+        mustBeString: Wartość musi być ciągiem znaków
+        missingFormatString: W wartości brakuje wymaganego ciągu formatowania %notFound
+        invalidEntityTag: Wartość nie jest poprawnym tagiem encji
+
+    playerAnimationsName:
+      errors:
+        invalidFunctionName: Plik animacji gracza jest nieprawidłowy!
+
+    namespace:
+      title: Przestrzeń nazw encji
+      description:
+        - Przestrzeń nazw twojej encji.
+      errors:
+        invalidFunctionName: Przestrzeń nazw encji jest nieprawidłowa!
+
+    projectName:
+      title: ID encji
+      description:
+        - Unikalne ID twojej encji.
+      errors:
+        invalidFunctionName: ID encji jest nieprawidłowe!
+
+    modelScalingMode:
+      title: Tryb skalowania modelu
+      description:
+        - Maksymalny rozmiar modelu pozwala na modele o szerokości 7x7x7 bloków, ale ogranicza skalowanie tylko do zmniejszania.
+        - Maksymalny zakres skalowania pozwala zmniejszać i powiększać do 3.125x rozmiaru, ale ogranicza maksymalny rozmiar modelu do 3x3x3 bloków
+      options:
+        3x3x3: Maksymalne skalowanie
+        7x7x7: Maksymalny rozmiar modelu
+
+    verbose:
+      title: Szczegółowe logi
+      description:
+        - Wskazuje wybranemu eksporterowi, czy eksportować dodatkowe komunikaty debugowania/błędów.
+        - Tylko eksportery statuy i animacji faktycznie to uwzględniają.
+
+    transparentTexturePath:
+      title: Ścieżka przezroczystej tekstury
+      description:
+        - Przezroczysta tekstura do dodawania przezroczystości wariantom. Potrzebna tylko, jeśli używasz przezroczystości w wariantach.
+      errors:
+        undefinedWhenNeeded: Ścieżka musi być zdefiniowana, jeśli używasz funkcji przezroczystości wariantów!
+
+    useCache:
+      title: Użyj pamięci podręcznej animacji
+      description:
+        - Renderuj ponownie tylko zmienione animacje
+
+    addsAdditionalModels:
+      title: Zezwól na dodatkowe modele w animacji gracza
+      description:
+        - Włącz to, jeśli dodano do sceny nowe kości/modele (na przykład akcesoria, inne encje, przedmioty...)
+
+    cacheMode:
+      title: Tryb pamięci podręcznej animacji
+      description:
+        - Pamięć podręczna animacji pozwala renderować ponownie tylko animacje zmienione od ostatniego eksportu. Dzięki temu powtarzane eksporty są znacznie szybsze, zwłaszcza w większych modelach.
+        - "- Tryb pamięci jest szybszy, ale używa więcej pamięci do przechowywania cache."
+        - "- Tryb dyskowy jest wolniejszy, ale zapisuje cache na dysku, aby ograniczyć użycie pamięci."
+      options:
+        memory: Tryb pamięci
+        disk: Tryb dyskowy
+
+    rotationMode:
+      title: Tryb rotacji
+      description:
+        - "ItemsAdder oferuje dwa tryby rotacji kości."
+        - "Wybierz je zależnie od tego, co będzie robić twoja encja:"
+        - " - Płynny: odpowiedni dla NPC i encji, które nie będą poruszać się bardzo szybko i mają niewiele kości."
+        - " - Precyzyjny: odpowiedni dla mobów z wieloma kośćmi i/lub poruszających się bardzo szybko (na przykład bieganie, skakanie, latanie, bossowie ze złożonymi atakami i podobne)."
+      options:
+        smooth: Płynny
+        precise: Precyzyjny
+
+    boundingBoxRenderMode:
+      title: Ramka limitu rozmiaru kości
+      description:
+        - "Skonfiguruj lub wyłącz ramkę/ramki limitu rozmiaru kości."
+        - "- Pojedyncza wyświetli tylko jedną ramkę naraz."
+        - "- Wiele wyświetli ramkę dla każdej wybranej kości."
+        - "- Wyłączone całkowicie ją wyłączy."
+      options:
+        single: Pojedyncza
+        many: Wiele
+        none: Wyłączone
+
+    idleAnim:
+      title: Animacja bezczynności
+      description:
+        - Nazwa animacji bezczynności
+
+    walkAnim:
+      title: Animacja chodzenia
+      description:
+        - Nazwa animacji chodzenia
+
+    attackAnim:
+      title: Animacja ataku
+      description:
+        - Nazwa animacji ataku
+
+    deathAnim:
+      title: Animacja śmierci
+      description:
+        - Nazwa animacji śmierci
+
+    flyAnim:
+      title: Animacja latania
+      description:
+        - Nazwa animacji latania
+
+    invalidAnim: Nieprawidłowa nazwa animacji
+
+  menu:
+    animation:
+      animType:
+        title: "Typ animacji"
+        value:
+          other: "Inne"
+          idle: "Bezczynność"
+          walk: "Chodzenie"
+          attack: "Atak"
+          death: "Śmierć"
+          fly: "Latanie"
+
+  dialogs:
+    boneConfig:
+      title: Konfiguracja kości
+      boneNbt: NBT kości
+      boneType: Typ kości
+      head: Głowa
+      normal: Zwykła kość
+      leftHandPivot: Punkt obrotu lewej ręki
+      rightHandPivot: Punkt obrotu prawej ręki
+      hatPivot: Punkt obrotu kapelusza
+      mount: Mocowanie (używane jako pozycja siedzenia)
+      locator: Lokalizator (używany jako pozycja efektów)
+      hitbox: Hitbox (obszar, który można atakować lub z którym można wchodzić w interakcję)
+      hitboxMultiCubeWarning: Czy na pewno? Ta kość ma więcej niż jeden sześcian. Wszystkie tekstury zostaną usunięte.
+      headProperties: "Właściwości głowy"
+      maxHeadRotY: "Maks. kąt Y głowy"
+      maxHeadRotX: "Maks. kąt X głowy"
+    variants:
+      title: Warianty modelu
+      description:
+        - Warianty pozwalają modelowi mieć różne "skórki", które można podmieniać w czasie działania za pomocą funkcji.
+
+    about:
+      title: O ItemsAdder Entity
+      description:
+        - Narzędzie dla administratorów serwerów do tworzenia płynnych i szczegółowych animacji dla ItemsAdder (plugin Spigot dla Minecraft Java Edition)
+
+      version: Wersja
+      buildID: ID buildu
+
+      creators: Twórcy
+      discordServer: Dołącz do mojego serwera Discord!
+      githubRepo: Źródło
+      developers: Deweloperzy
+      originalDevelopers: Oryginalni deweloperzy Animated Java
+      originalPluginInfo: Informacje o oryginalnym pluginie Animated Java
+      patrons: Patroni
+      honourableMentions: Wyróżnienia
+
+      fetchbotQuote: '"Niech moby z Javy też tańczą!"'
+      snavesutitQuote: '"armor_stand to miłość, armor_stand to życie."'
+
+      youtuber: YouTuber
+      translator: Tłumacz
+      contributor: Współtwórca
+      moderator: Moderator Discorda
+      closedBeta: Tester zamkniętej bety
+      brandingArtist: Grafik brandingu
+      patronTier1: Patron poziomu 1
+      patronTier2: Patron poziomu 2
+      patronTier3: Patron poziomu 3
+
+    animationProperties:
+      animationCompleteCommand:
+        label: Komenda zakończenia animacji
+
+    errors:
+      misc:
+        title: W ItemsAdder Entity wystąpił nieznany błąd
+        body:
+          - |-
+            <textarea style="height: 256px" readonly="readonly">
+            ------ Błąd ------
+            %errorMessage  //  "%randomErrorMessage"
+            ------ Stos ------
+            %errorStack
+
+            ID buildu: %buildID
+            </textarea>
+          - <p>Zgłoś ten błąd na <a href="%githubLink">GitHubie ItemsAdder Entity</a>, podając informacje, jak go odtworzyć, oraz kopię powyższego błędu.</p>
+          - <p>Możesz też dołączyć do naszego <a href="%discordLink">serwera Discord</a> i zadawać pytania na kanale animated-java-support.</p>
+          - <p>Dziękujemy!</p>
+
+      scaleOutOfBounds:
+        title: Skala poza zakresem
+        body:
+          - "Kość '%boneName' ma nieprawidłowe skalowanie podczas jednej z animacji:"
+          - "%displayString"
+
+      topLevelCubes:
+        title: Model ma sześciany na najwyższym poziomie
+        body:
+          - Wszystkie sześciany muszą znajdować się w grupie.
+
+      predicateMergeFailed:
+        title: Nie udało się scalić predykatu
+        body:
+          - "%reason"
+          - ItemsAdder Entity obsługuje scalanie tylko z modelami predykatów kontrolowanymi przez ItemsAdder Entity.
+          - Upewnij się, że próbujesz scalić model przedmiotu predykatu z poprawnym, wcześniej istniejącym modelem przedmiotu predykatu ItemsAdder Entity.
+        reasons:
+          overridesMissing: Brakuje listy nadpisań modelu.
+          ajMetaMissing: Plik modelu, z którym próbujesz scalić, nie jest plikiem predykatu ItemsAdder Entity.
+
+      invalidAnimationSnappingValue:
+        title: Nieprawidłowa wartość przyciągania animacji
+        body:
+          - Animacja '%animationName' ma wartość przyciągania %snapping!
+          - Ze względu na szybkość ticków Minecrafta ItemsAdder Entity obsługuje tylko wartość przyciągania 20.
+          - Zaktualizuj animacje i klatki kluczowe, aby uwzględnić to ograniczenie przed eksportem.
+          - (Może być konieczne lekkie przesunięcie klatek kluczowych na osi czasu, aby zaktualizować ich przyciągnięty czas)
+
+      rigFolderHasUnknownContent:
+        title: Nieużywany folder rigu
+        body:
+          - Folder wybrany jako folder modelu rigu zawiera nieznane pliki.
+          - Czy na pewno chcesz nadpisać zawartość tego folderu swoim rigiem?
+          - "Wybrany folder:"
+          - <textarea>%path</textarea>
+          - "Nieznane pliki:"
+          - <textarea>%files</textarea>
+
+      rigFolderAlreadyUsedByOther:
+        title: Wybrany folder modelu rigu jest już używany
+        body:
+          - Folder wybrany jako folder modelu rigu zawiera już modele innego rigu.
+          - Czy na pewno chcesz nadpisać zawartość tego folderu swoim rigiem?
+          - "Wybrany folder:"
+          - <textarea>%path</textarea>
+          - "Pliki:"
+          - <textarea>%files</textarea>
+
+      unableToGenerateTexturePath:
+        title: Nieprawidłowa ścieżka tekstury
+        body:
+          - Tekstura '%textureName' ma nieprawidłową lokalizację w Resource Packu
+          - Upewnij się, że jest poprawnie zapisana w prawidłowym Resource Packu, w podfolderze 'assets/namespace/textures/'
+          - np. 'resources/assets/minecraft/textures/item/diamond.png'
+
+      unableToGenerateModelPath:
+        title: Nieprawidłowa ścieżka modelu
+        body:
+          - Model '%modelName' ma nieprawidłową lokalizację w Resource Packu
+          - Upewnij się, że jest poprawnie zapisany w prawidłowym Resource Packu, w podfolderze 'assets/namespace/models/'
+          - np. 'resources/assets/minecraft/models/item/diamond.json'
+
+      invalidCubeRotations:
+        title: Nieprawidłowe rotacje elementów
+        body:
+          - Rotacje niektórych sześcianów są nieprawidłowe dla formatu modelu Java.
+          - Popraw wszystkie nieprawidłowe rotacje przed eksportem.
+
+      unsavedTexture:
+        title: Niezapisana tekstura
+        body:
+          - Tekstura '%textureName' nie jest zapisana na dysku!
+          - Upewnij się, że jest zapisana w poprawnej lokalizacji resource packa.
+
+      transparentTexturePathNotFound:
+        title: Ścieżka przezroczystej tekstury nie jest zdefiniowana
+        body:
+          - Wygląda na to, że próbujesz użyć wariantów z przezroczystymi teksturami bez zdefiniowania ścieżki tekstury!
+          - Przed eksportem musisz skonfigurować ścieżkę przezroczystej tekstury w ustawieniach.
+
+      rigModelsExportFolderUndefined:
+        title: Folder modelu rigu niezdefiniowany
+        body:
+          - Przed eksportem musisz zdefiniować ścieżkę folderu modelu rigu w ustawieniach.
+
+  exporters:
+    #? Generic Exporter Strings
+    generic:
+      progress:
+        writingDataPack: Zapisywanie Data Packa na dysku... %progress% | Zapisywanie %fileName
+        exportingDataPack: Generowanie Data Packa... %progress%
+
+      settings:
+        rootEntityType:
+          title: Typ encji głównej
+          description:
+            - Typ encji używany jako encja główna modelu
+          errors:
+            invalidEntity: Wybrana encja nie istnieje!
+
+        rootEntityNbt:
+          title: NBT encji głównej
+          description:
+            - Dane NBT encji głównej
+          errors:
+            invalidNbt: Nieprawidłowy NBT!
+
+        markerArmorStands:
+          title: Armor Standy markerów
+          description:
+            - Po włączeniu wszystkie armor_stands używane do wyświetlania rigu nie będą mieć hitboxa ani kolizji.
+
+        modelTag:
+          title: Tag modelu
+          description:
+            - Tag używany do wybrania modelu
+
+        rootTag:
+          title: Tag główny
+          description:
+            - Tag używany do wybrania encji głównej statuy
+
+        allBonesTag:
+          title: Tag wszystkich kości
+          description:
+            - Tag używany do wybrania dowolnych lub wszystkich kości statuy
+
+        boneModelDisplayTag:
+          title: Tag wyświetlania modelu kości
+          description:
+            - Tag używany do wybrania encji wyświetlających model (armor_stands z przedmiotami na głowach)
+
+        individualBoneTag:
+          title: Tag pojedynczej kości
+          description:
+            - Tag używany do wybrania konkretnej kości po nazwie
+
+        internalScoreboardObjective:
+          title: Wewnętrzny scoreboard
+          description:
+            - Nazwa celu scoreboarda używanego do wewnętrznych obliczeń
+
+        idScoreboardObjective:
+          title: Scoreboard ID modelu
+          description:
+            - Nazwa celu scoreboarda używanego do identyfikacji encji należących do danej instancji modelu
+
+        exportMode:
+          title: Tryb eksportu
+          description:
+            - Format eksportu. Vanilla wyeksportuje zwykły Data Pack i Resource Pack.
+            - MCB wyeksportuje Resource Pack i plik .mc dla kompilatora lang-mc
+          options:
+            mcb: MCB
+            vanilla: Vanilla
+
+        itemsadderItemConfig:
+          title: Plik lang-mc
+          description:
+            - Ścieżka, do której wyeksportować plik .mc
+            - Aby zbudować wyeksportowany data pack, musisz zainstalować mc-extra w swoim workspace MCB
+
+        mcbConfigPath:
+          title: Ścieżka lang-mc config.json
+          description:
+            - Eksportuje domyślną konfigurację MCB dla ItemsAdder Entity
+            - OSTRZEŻENIE! Nadpisze istniejący config.json
+          errors:
+            mustBeNamedAfterProject: Ścieżka musi kończyć się plikiem o nazwie %projectName.mc!
+
+    #? Vanilla Statue Exporter
+    vanillaStatue:
+      title: Eksporter statuy
+
+    #? Vanilla Animation Exporter
+    vanillaAnimation:
+      title: Eksporter animacji
+      dialogs:
+        errors:
+          zeroLengthAnimation:
+            title: Animacja o zerowej długości
+            body:
+              - Animacja %animationName jest za krótka! Animacje muszą trwać co najmniej 0.05 sekundy (czyli 1 tick gry)
+
+          noAnimations:
+            title: Brak animacji
+            body:
+              - Nie utworzono żadnych animacji!
+              - Musisz utworzyć animacje w zakładce animacji, zanim użyjesz eksportera animacji.
+          markerNoLoopAnim:
+            message: Ta animacja nie ma ustawionej wartości "Loop Mode" na "Loop". Zmień wartość na "Loop" przed ustawieniem markerów.
+          tooManyMarkers:
+            message: Ta animacja zawiera już 2 markery "Loop Start/End"! Kliknij je prawym przyciskiem, aby je usunąć, jeśli trzeba.
+      settings:
+        frameScoreboardObjective:
+          title: Scoreboard klatek
+          description:
+            - Nazwa celu scoreboarda używanego do śledzenia, która klatka animacji ma zostać odtworzona jako następna
+
+        animatingFlagScoreboardObjective:
+          title: Scoreboard flagi animacji
+          description:
+            - Nazwa celu scoreboarda używanego do sprawdzania, czy rig jest aktywnie animowany
+
+        animationLoopModeScoreboardObjective:
+          title: Scoreboard trybu pętli animacji
+          description:
+            - Nazwa celu scoreboarda używanego do kontrolowania zapętlania każdej animacji
+      other:
+        addLoopMarker: Dodaj marker początku/końca pętli
+        toggleLoopMarkers: Ustaw/usuń markery początku/końca pętli

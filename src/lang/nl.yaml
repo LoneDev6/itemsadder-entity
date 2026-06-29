@@ -1,143 +1,449 @@
-#? AJ
-iaentitymodel: ItemsAdder Entity
-iaentitymodel.menubar.export.name: Export Model
+iaentitymodel:
+  plugin:
+    title: ItemsAdder Entity
 
-panel.states: Modelvarianten
+  menubar:
+    dropdown: ItemsAdder Entity
+    settings: Instellingen
+    export: Model exporteren
+    about: Over...
 
-iaentitymodel.settings.global: '(Globaal)'
-iaentitymodel.settings.optional: '(Optioneel)'
-iaentitymodel.settings.invalidSetting.generic: 'Instellingswaarde is ongeldig'
+  panels:
+    variants:
+      title: Modelvarianten (niet geïmplementeerd)
+      addVariant:
+        title: Variant toevoegen
+        description: Voegt een nieuwe variant aan het model toe
+      back: Terug
 
-iaentitymodel.boneConfig.title: Bot Configuratie
-iaentitymodel.boneConfig.boneNbt: Bot NBT
-iaentitymodel.boneConfig.head: Is Head
+  popups:
+    exportCancelled: Export geannuleerd!
+    exportInProgress: Export bezig!
+    noExporterSelected: Geen exporter geselecteerd!
+    successfullyExported: Export geslaagd!
+    projectNotSaved: Sla het project op voordat je exporteert!
 
-iaentitymodel.popup.quickMessage.noExporterSelected: Geen Exporter geselecteerd!
+  progress:
+    animationRendering: Animaties renderen... %currents/%totals
 
-iaentitymodel.popup.warning.rigFolderUnused.title: Ongebruikte animatie rigmap!
-iaentitymodel.popup.warning.rigFolderUnused.body: |-
-    Deze map bevat geen rigs.
-    Weet je zeker dat je deze map wilt gebruiken?
+  settings:
+    header: ItemsAdder Entity-instellingen
+    isGlobal: '(Globaal)'
+    isOptional: '(Optioneel)'
 
-iaentitymodel.popup.error.rigFolderAlreadyUsedByOther.title: Gekozen rigmap is al in gebruik
-iaentitymodel.popup.error.rigFolderAlreadyUsedByOther.body: |-
-    Deze map bevat al een rig for een ander model.
-    Weet je zeker dat je de bestaande rig in de map over wilt schrijven?
+    generic:
+      errors:
+        invalid: Als je dit bericht ziet, is ItemsAdder Entity kapot. (Uh Oh)
+        emptyValue: Waarde mag niet leeg zijn
+        mustBeBoolean: Waarde moet een boolean zijn
+        mustBeString: Waarde moet een string zijn
+        missingFormatString: Waarde mist vereiste opmaakstring %notFound
+        invalidEntityTag: Waarde is geen geldige entity-tag
 
-iaentitymodel.popup.error.transparentTexturePathNotFound.title: Transparente Texture pad is niet gedefinieerd
-iaentitymodel.popup.error.transparentTexturePathNotFound.body: |-
-    Het lijkt erop dat je modelvarianten wilt gebruiken met transparente textures zonder een texture pad te definiëren!
-    Je moet de transparente texture pad in de instellingen configureren voordat je kunt exporteren.
+    playerAnimationsName:
+      errors:
+        invalidFunctionName: Bestand met speleranimaties is niet geldig!
 
-iaentitymodel.progress.animationRendering.text: Animaties aan het renderen... %currents/%totals
+    namespace:
+      title: Entity-namespace
+      description:
+      - De namespace van je entity.
+      errors:
+        invalidFunctionName: Entity-namespace is niet geldig!
 
-#? varients panel
-varients.ui.addVarient: Voeg modelvariant toe
-varients.ui.addVarient.description: Voegt een nieuwe modelvariant voor de huidige model toe
-varients.ui.back: Terug
+    projectName:
+      title: Entity-ID
+      description:
+      - De unieke ID van je entity.
+      errors:
+        invalidFunctionName: Entity-ID is niet geldig!
 
-#? AJ Settings
-iaentitymodel.menubar.dropdown.name: ItemsAdder Entity
-iaentitymodel.menubar.settings.name: Instellingen
-iaentitymodel.menubar.exporterList.name: Exporters
+    modelScalingMode:
+      title: Model-schaalmodus
+      description:
+      - Maximale modelgrootte biedt modellen tot 7x7x7 blokken breed, maar beperkt schalen tot alleen verkleinen.
+      - Maximaal schaalbereik biedt verkleinen en vergroten tot 3.125x, maar beperkt de maximale modelgrootte tot 3x3x3 blokken
+      options:
+        3x3x3: Maximale schaal
+        7x7x7: Maximale modelgrootte
 
-iaentitymodel.setting.projectName.name: Modelnaam
-iaentitymodel.setting.projectName.description: De unieke ID van uw entiteit. Zorg ervoor dat je dit instelt!
+    verbose:
+      title: Uitgebreid
+      description:
+      - Geeft aan de geselecteerde exporter door of extra debug-/foutmeldingen moeten worden geëxporteerd.
+      - Heeft eigenlijk alleen effect op de Statue- en Animation-exporters.
 
-iaentitymodel.setting.exporter.name: Exporteerder
-iaentitymodel.setting.exporter.description: Welk exportformaat wil je gebruiken voor het huidige project?
+    transparentTexturePath:
+      title: Pad naar transparante texture
+      description:
+      - Een transparante texture om transparantie aan varianten toe te voegen. Alleen nodig als je transparantie in je varianten gebruikt.
+      errors:
+        undefinedWhenNeeded: Pad moet zijn ingesteld als je de transparantiefunctie van varianten gebruikt!
 
-iaentitymodel.setting.rigModelsExportFolder.name: Map voor geëxporteerde rig modellen
-iaentitymodel.setting.rigModelsExportFolder.description: De map die alle rig modellen van het huidige project zal bevatten
+    useCache:
+      title: Animatiecache gebruiken
+      description:
+      - Alleen gewijzigde animaties opnieuw renderen
 
-iaentitymodel.setting.transparentTexturePath.name: Bestandspad voor Transparente Texture
-iaentitymodel.setting.transparentTexturePath.description: Een transparente texture, die gebruikt wordt om transparantie toe te voegen aan modelvarianten; wordt alleen maar gebruikt als je transparantie gebruikt in je modelvarianten.
+    addsAdditionalModels:
+      title: Extra modellen toestaan in speleranimatie
+      description:
+      - Schakel dit in als je nieuwe bones/modellen aan de scene hebt toegevoegd (bijvoorbeeld accessoires, andere entities, items...)
 
-iaentitymodel.setting.useCache.name: Gebruik Animatie Cache
-iaentitymodel.setting.useCache.description: Render alleen de veranderde animaties opnieuw
+    cacheMode:
+      title: Animatiecachemodus
+      description:
+      - Met de animatiecache renderen we alleen animaties opnieuw die sinds de laatste export zijn gewijzigd. Hierdoor zijn herhaalde exports veel sneller, vooral bij grotere modellen.
+      - "- Geheugenmodus is sneller, maar gebruikt meer geheugen om de cache op te slaan."
+      - "- Schijfmodus is langzamer, maar slaat de cache op schijf op om geheugengebruik te besparen."
+      options:
+        memory: Geheugenmodus
+        disk: Schijfmodus
 
-iaentitymodel.setting.cacheMode.name: Animatie Cache Modus
-iaentitymodel.setting.cacheMode.description: |-
-    The Animatie Cache zorgt ervoor dat ItemsAdder Entity slechts animaties die veranderd zijn sinds de laatste export opnieuw rendert. Dit zorgt voor snellere exporttijden, vooral bij grotere modellen.
-    - Geheugenmodus is sneller, maar gebruikt meer geheugen om de cache op te slaan.
-    - Diskmodus is langzamer, maar slaat de cache op de disk waardoor er minder geheugen verbruikt wordt.
-iaentitymodel.setting.cacheMode.memory.name: Geheugenmodus
-iaentitymodel.setting.cacheMode.file.name: Diskmodus
+    rotationMode:
+      title: Rotatiemodus
+      description:
+      - "ItemsAdder biedt twee rotatiemodi voor bones."
+      - "Je moet ze kiezen op basis van wat je entity gaat doen:"
+      - " - Vloeiend: geschikt voor NPC's en entities die niet erg snel rondlopen en weinig bones hebben."
+      - " - Precies: geschikt voor mobs met veel bones en/of die heel snel bewegen (bijvoorbeeld: rennen, springen, vliegen, bazen met complexe aanvallen en dergelijke)."
+      options:
+        smooth: Vloeiend
+        precise: Precies
 
-iaentitymodel.setting.boundingBoxRenderMode.name: Box voor de maximumgrootte van een bot
-iaentitymodel.setting.boundingBoxRenderMode.description: |-
-    Configureer or schakel de box(en) voor de maximumgrootte van een bot uit
-    - 'Enkel' toont één box tegelijk.
-    - 'Meerdere' toont voor elke geselecteerde bot een box.
-    - 'Uitgeschakeld' toont geen box.
-iaentitymodel.setting.boundingBoxRenderMode.single.name: Enkel
-iaentitymodel.setting.boundingBoxRenderMode.many.name: Meerdere
-iaentitymodel.setting.boundingBoxRenderMode.none.name: Uitgeschakeld
+    boundingBoxRenderMode:
+      title: Limietbox voor bonegrootte
+      description:
+      - "Configureer of schakel de limietbox(en) voor bonegrootte uit."
+      - "- Enkel toont slechts één box tegelijk."
+      - "- Meerdere toont een box voor elke bone die je hebt geselecteerd."
+      - "- Uitgeschakeld schakelt dit volledig uit."
+      options:
+        single: Enkel
+        many: Meerdere
+        none: Uitgeschakeld
 
-#? Animation Exporter
-iaentitymodel_exporter_animationExporter: Animatie Exporteerder
-iaentitymodel_exporter_animationExporter.exportingDataPackProgress: Data Pack aan het genereren... %progress%
-iaentitymodel_exporter_animationExporter.writingDataPackProgress: Data Pack naar de disk aan het schrijven... %progress% | %fileName aan het schrijven
+    idleAnim:
+      title: Idle-animatie
+      description:
+      - Naam van de idle-animatie
 
-iaentitymodel_exporter_animationExporter.popup.warning.zeroLengthAnimation.title: Animatie met te korte duur
-iaentitymodel_exporter_animationExporter.popup.warning.zeroLengthAnimation.body:
-    |-
-    Een van je animaties is te kort! Animaties moeten minimaal 0.05 secondes lang zijn (1 game tick)
+    walkAnim:
+      title: Loopanimatie
+      description:
+      - Naam van de loopanimatie
 
-iaentitymodel_exporter_animationExporter.setting.rootEntityType.name: Type voor de basisentiteit
-iaentitymodel_exporter_animationExporter.setting.rootEntityType.description: De type voor de basisentiteit van de rig
+    attackAnim:
+      title: Aanvalsanimatie
+      description:
+      - Naam van de aanvalsanimatie
 
-iaentitymodel_exporter_animationExporter.setting.rootEntityNbt.name: Basisentiteit NBT
-iaentitymodel_exporter_animationExporter.setting.rootEntityNbt.description: De NBT voor de basisentiteit
+    deathAnim:
+      title: Doodsanimatie
+      description:
+      - Naam van de doodsanimatie
 
-iaentitymodel_exporter_animationExporter.setting.boneType.name: Bot Type
-iaentitymodel_exporter_animationExporter.setting.boneType.description: AEC Stack biedt preciezere positiebeweging aan ten koste van het verdubbelen van het aantal entiteiten per bot.
-iaentitymodel_exporter_animationExporter.setting.boneType.aecStack.name: AEC Stack
-iaentitymodel_exporter_animationExporter.setting.boneType.armorStand.name: Armor Stand
+    flyAnim:
+      title: Vlieganimatie
+      description:
+      - Naam van de vlieganimatie
 
-iaentitymodel_exporter_animationExporter.setting.markerArmorStands.name: Marker instelling voor armor stands
-iaentitymodel_exporter_animationExporter.setting.markerArmorStands.description: Wanneer deze instelling ingeschakeld is, zullen alle armor stands van de rig geen hitbox of collision hebben.
+    invalidAnim: Ongeldige animatienaam
 
-iaentitymodel_exporter_animationExporter.setting.modelTag.name: Model Tag
-iaentitymodel_exporter_animationExporter.setting.modelTag.description: The tag die gebruikt wordt om het model te selecteren
+  menu:
+    animation:
+      animType:
+        title: "Animatietype"
+        value:
+          other: "Overig"
+          idle: "Idle"
+          walk: "Lopen"
+          attack: "Aanval"
+          death: "Dood"
+          fly: "Vliegen"
 
-iaentitymodel_exporter_animationExporter.setting.rootTag.name: Root Tag
-iaentitymodel_exporter_animationExporter.setting.rootTag.description: The tag die gebruikt wordt om de basisentiteit van het standbeeld te selecteren
+  dialogs:
+    boneConfig:
+      title: Boneconfiguratie
+      boneNbt: Bone-NBT
+      boneType: Bonetype
+      head: Hoofd
+      normal: Generieke bone
+      leftHandPivot: Linkerhand-pivot
+      rightHandPivot: Rechterhand-pivot
+      hatPivot: Hoed-pivot
+      mount: Mount (gebruikt als zitlocatie)
+      locator: Locator (gebruikt als effectlocatie)
+      hitbox: Hitbox (gebied dat kan worden aangevallen of gebruikt)
+      hitboxMultiCubeWarning: Weet je het zeker? Deze bone heeft meer dan één cube. Alle textures worden verwijderd.
+      headProperties: "Hoofdeigenschappen"
+      maxHeadRotY: "Maximale hoofdhoek Y"
+      maxHeadRotX: "Maximale hoofdhoek X"
+    variants:
+      title: Modelvarianten
+      description:
+      - Varianten geven je model verschillende "skins" die tijdens runtime met een functie kunnen worden gewisseld.
 
-iaentitymodel_exporter_animationExporter.setting.allBonesTag.name: Alle botten Tag
-iaentitymodel_exporter_animationExporter.setting.allBonesTag.description: The tag die gebruikt wordt om alle botten van het standbeeld te selecteren
+    about:
+      title: Over ItemsAdder Entity
+      description:
+      - Een tool waarmee serverbeheerders vloeiende en gedetailleerde animaties kunnen maken voor ItemsAdder (Spigot-plugin voor Minecraft Java Edition)
 
-iaentitymodel_exporter_animationExporter.setting.boneModelDisplayTag.name: Bot Model Display Tag
-iaentitymodel_exporter_animationExporter.setting.boneModelDisplayTag.description: The tag die gebruikt wordt om de entiteit te selecteren waar het voorwerpmodel op wordt getoond.
+      version: Versie
+      buildID: Build-ID
 
-iaentitymodel_exporter_animationExporter.setting.individualBoneTag.name: Individuele Bot Tag
-iaentitymodel_exporter_animationExporter.setting.individualBoneTag.description: The tag die gebruikt wordt om specifieke botten van het standbeeld te selecteren
+      creators: Makers
+      discordServer: Word lid van mijn Discord-server!
+      githubRepo: Broncode
+      developers: Ontwikkelaars
+      originalDevelopers: Oorspronkelijke Animated Java-ontwikkelaars
+      originalPluginInfo: Informatie over de oorspronkelijke Animated Java-plugin
+      patrons: Patrons
+      honourableMentions: Eervolle vermeldingen
 
-iaentitymodel_exporter_animationExporter.setting.internalScoreboardObjective.name: Interne scoreboard
-iaentitymodel_exporter_animationExporter.setting.internalScoreboardObjective.description: De naam van de scoreboard objective die gebruikt wordt voor interne berekeningen
+      fetchbotQuote: '"Laat de Java-mobs ook dansen!"'
+      snavesutitQuote: '"armor_stand is liefde, armor_stand is leven."'
 
-iaentitymodel_exporter_animationExporter.setting.idScoreboardObjective.name: Model ID Scoreboard
-iaentitymodel_exporter_animationExporter.setting.idScoreboardObjective.description: De naam van de scoreboard objective die gebruikt wordt voor om entiteiten van verschillende instanties van hetzelfde model te onderscheiden
+      youtuber: YouTuber
+      translator: Vertaler
+      contributor: Bijdrager
+      moderator: Discord-moderator
+      closedBeta: Gesloten-bètatester
+      brandingArtist: Branding-artiest
+      patronTier1: Niveau 1-patron
+      patronTier2: Niveau 2-patron
+      patronTier3: Niveau 3-patron
 
-iaentitymodel_exporter_animationExporter.setting.frameScoreboardObjective.name: Frame Scoreboard
-iaentitymodel_exporter_animationExporter.setting.frameScoreboardObjective.description: De naam van de scoreboard objective die gebruikt wordt om bij te houden welke frame als volgt komt
+    animationProperties:
+      animationCompleteCommand:
+        label: Commando bij einde animatie
 
-iaentitymodel_exporter_animationExporter.setting.animatingFlagScoreboardObjective.name: Animatie Vlag Scoreboard
-iaentitymodel_exporter_animationExporter.setting.animatingFlagScoreboardObjective.description: De naam van de scoreboard objective die gebruikt wordt om bij te houden of een rig momenteel geanimeerd is.
+    errors:
+      misc:
+        title: Er is een onbekende fout opgetreden in ItemsAdder Entity
+        body:
+        - |-
+          <textarea style="height: 256px" readonly="readonly">
+          ------ Fout ------
+          %errorMessage  //  "%randomErrorMessage"
+          ------ Stacktrace ------
+          %errorStack
 
-iaentitymodel_exporter_animationExporter.setting.animationLoopModeScoreboardObjective.name: AnimatieLoop Modus Scoreboard
-iaentitymodel_exporter_animationExporter.setting.animationLoopModeScoreboardObjective.description: De naam van de scoreboard objective die gebruikt wordt om de het loopgedrag van elke animatie controlleert
+          Build-ID: %buildID
+          </textarea>
+        - <p>Meld deze fout op <a href="%githubLink">de GitHub van ItemsAdder Entity</a> met informatie over hoe je hem kunt reproduceren en een kopie van de fout hierboven.</p>
+        - <p>Je kunt ook lid worden van onze <a href="%discordLink">Discord-server</a> en vragen stellen in het animated-java-support-kanaal.</p>
+        - <p>Bedankt!</p>
 
-iaentitymodel_exporter_animationExporter.setting.exportMode.name: Exporteer Modus
-iaentitymodel_exporter_animationExporter.setting.exportMode.description: In welk formaat je exporteert. Vanilla zal een normale Data Pack en Resource Pack exporteren. MCB zal een resource pack exporteren en een .mc bestand voor de lang-mc compiler
-iaentitymodel_exporter_animationExporter.setting.exportMode.vanilla.name: Vanilla
-iaentitymodel_exporter_animationExporter.setting.exportMode.mcb.name: MCB
+      scaleOutOfBounds:
+        title: Schaal buiten bereik
+        body:
+        - "De bone '%boneName' heeft een ongeldige schaal tijdens een van je animaties:"
+        - "%displayString"
 
-iaentitymodel_exporter_animationExporter.setting.itemsadderItemConfig.name: Lang-mc bestand
-iaentitymodel_exporter_animationExporter.setting.itemsadderItemConfig.description: Het bestandspad waar het .mc bestand naar geëxporteerd wordt
-iaentitymodel_exporter_animationExporter.setting.itemsadderItemConfig.invalidPopup.text: Ongeldig MCB bestandspad! Het MCB bestand moet %projectName.mc (project_name.mc) genoemd worden!
+      topLevelCubes:
+        title: Model heeft cubes op topniveau
+        body:
+        - Alle cubes moeten binnen een groep staan.
 
-iaentitymodel_exporter_animationExporter.setting.mcbConfigPath.name: Lang-mc config.json bestandspad
-iaentitymodel_exporter_animationExporter.setting.mcbConfigPath.description: |-
-    Exporteert de standaard MCB config voor ItemsAdder Entity
-    WAARSCHUWING! Dit zal de huidige config.json overschrijven
+      predicateMergeFailed:
+        title: Predicate samenvoegen mislukt
+        body:
+        - "%reason"
+        - ItemsAdder Entity ondersteunt alleen samenvoegen in predicatemodellen die door ItemsAdder Entity worden beheerd.
+        - Controleer of je je predicate-itemmodel probeert samen te voegen met een geldig bestaand ItemsAdder Entity predicate-itemmodel.
+        reasons:
+          overridesMissing: Lijst met model-overrides ontbreekt.
+          ajMetaMissing: Modelbestand om in samen te voegen is geen ItemsAdder Entity-predicatebestand.
+
+      invalidAnimationSnappingValue:
+        title: Ongeldige snappingwaarde voor animatie
+        body:
+        - De animatie '%animationName' heeft een snappingwaarde van %snapping!
+        - Vanwege hoe snel Minecraft ticks verwerkt, ondersteunt ItemsAdder Entity alleen een snappingwaarde van 20.
+        - Werk je animaties en keyframes bij zodat ze aan deze beperking voldoen voordat je exporteert.
+        - (Mogelijk moet je je keyframes een beetje op de tijdlijn verplaatsen om hun gesnapte tijd bij te werken)
+
+      rigFolderHasUnknownContent:
+        title: Ongebruikte rigmap
+        body:
+        - De map die je als rigmodelmap hebt gekozen bevat onbekende bestanden.
+        - Weet je zeker dat je de inhoud van deze map met je rig wilt overschrijven?
+        - "Gekozen map:"
+        - <textarea>%path</textarea>
+        - "Onbekende bestanden:"
+        - <textarea>%files</textarea>
+
+      rigFolderAlreadyUsedByOther:
+        title: De gekozen rigmodelmap is al in gebruik
+        body:
+        - De map die je als rigmodelmap hebt gekozen bevat al modellen van een andere rig.
+        - Weet je zeker dat je de inhoud van deze map met je rig wilt overschrijven?
+        - "Gekozen map:"
+        - <textarea>%path</textarea>
+        - "Bestanden:"
+        - <textarea>%files</textarea>
+
+      unableToGenerateTexturePath:
+        title: Ongeldig texturepad
+        body:
+        - De texture '%textureName' heeft een ongeldige locatie binnen een Resource Pack
+        - Zorg dat deze correct is opgeslagen binnen een geldige Resource Pack in een submap van 'assets/namespace/textures/'
+        - bijvoorbeeld 'resources/assets/minecraft/textures/item/diamond.png'
+
+      unableToGenerateModelPath:
+        title: Ongeldig modelpad
+        body:
+        - Het model '%modelName' heeft een ongeldige locatie binnen een Resource Pack
+        - Zorg dat het correct is opgeslagen binnen een geldige Resource Pack in een submap van 'assets/namespace/models/'
+        - bijvoorbeeld 'resources/assets/minecraft/models/item/diamond.json'
+
+      invalidCubeRotations:
+        title: Ongeldige elementrotaties
+        body:
+        - De rotaties van sommige cubes zijn ongeldig voor het Java-modelformaat.
+        - Corrigeer alle ongeldige rotaties voordat je exporteert.
+
+      unsavedTexture:
+        title: Niet-opgeslagen texture
+        body:
+        - De texture '%textureName' is niet op schijf opgeslagen!
+        - Zorg dat deze is opgeslagen op een geldige resourcepacklocatie.
+
+      transparentTexturePathNotFound:
+        title: Pad naar transparante texture niet ingesteld
+        body:
+        - Het lijkt erop dat je varianten met transparante textures probeert te gebruiken zonder een texturepad in te stellen!
+        - Je moet het pad naar de transparante texture in de instellingen configureren voordat je kunt exporteren.
+
+      rigModelsExportFolderUndefined:
+        title: Rigmodelmap niet ingesteld
+        body:
+        - Je moet in de instellingen een pad voor de rigmodelmap instellen voordat je kunt exporteren.
+
+  exporters:
+    #? Generic Exporter Strings
+    generic:
+      progress:
+        writingDataPack: Data Pack naar schijf schrijven... %progress% | %fileName schrijven
+        exportingDataPack: Data Pack genereren... %progress%
+
+      settings:
+        rootEntityType:
+          title: Root-entitytype
+          description:
+          - Het entitytype dat als root-entity voor het model wordt gebruikt
+          errors:
+            invalidEntity: Gekozen entity bestaat niet!
+
+        rootEntityNbt:
+          title: Root-entity-NBT
+          description:
+          - De NBT-data van de root-entity
+          errors:
+            invalidNbt: Ongeldige NBT!
+
+        markerArmorStands:
+          title: Marker Armor Stands
+          description:
+          - Indien ingeschakeld hebben alle armor_stands die worden gebruikt om de rig weer te geven geen hitbox of collision.
+
+        modelTag:
+          title: Modeltag
+          description:
+          - De tag die wordt gebruikt om het model te selecteren
+
+        rootTag:
+          title: Roottag
+          description:
+          - De tag die wordt gebruikt om de root-entity van het standbeeld te selecteren
+
+        allBonesTag:
+          title: Alle-bones-tag
+          description:
+          - De tag die wordt gebruikt om een of alle bones van het standbeeld te selecteren
+
+        boneModelDisplayTag:
+          title: Bone-modelweergavetag
+          description:
+          - De tag die wordt gebruikt om de modelweergave-entities te selecteren (armor_stands met items op hun hoofd)
+
+        individualBoneTag:
+          title: Individuele-bone-tag
+          description:
+          - De tag die wordt gebruikt om een specifieke bone op naam te selecteren
+
+        internalScoreboardObjective:
+          title: Intern scoreboard
+          description:
+          - De naam van de scoreboard objective die wordt gebruikt voor interne berekeningen
+
+        idScoreboardObjective:
+          title: Model-ID-scoreboard
+          description:
+          - De naam van de scoreboard objective die wordt gebruikt om te bepalen welke entities bij welke modelinstantie horen
+
+        exportMode:
+          title: Exportmodus
+          description:
+          - Het soort formaat waarnaar moet worden geëxporteerd. Vanilla exporteert een normale Data Pack en Resource Pack.
+          - MCB exporteert een Resource Pack en .mc-bestand voor de lang-mc-compiler
+          options:
+            mcb: MCB
+            vanilla: Vanilla
+
+        itemsadderItemConfig:
+          title: Lang-mc-bestand
+          description:
+          - Het pad waarnaar het .mc-bestand wordt geëxporteerd
+          - Je moet mc-extra in je MCB-workspace installeren om de geëxporteerde data pack te kunnen bouwen
+
+        mcbConfigPath:
+          title: Pad naar Lang-mc config.json
+          description:
+          - Exporteert de standaard MCB-configuratie voor ItemsAdder Entity
+          - WAARSCHUWING! Overschrijft bestaande config.json
+          errors:
+            mustBeNamedAfterProject: Pad moet eindigen op een bestand met de naam %projectName.mc!
+
+    #? Vanilla Statue Exporter
+    vanillaStatue:
+      title: Standbeeld-exporter
+
+    #? Vanilla Animation Exporter
+    vanillaAnimation:
+      title: Animatie-exporter
+      dialogs:
+        errors:
+          zeroLengthAnimation:
+            title: Animatie met lengte nul
+            body:
+            - De animatie %animationName is te kort! Animaties moeten minstens 0.05 seconden (of 1 gametick) lang zijn
+
+          noAnimations:
+            title: Geen animaties
+            body:
+            - Je hebt nog geen animaties gemaakt!
+            - Je moet eerst animaties maken in het animatietabblad voordat je kunt exporteren met de animatie-exporter.
+          markerNoLoopAnim:
+            message: De "Loop Mode" van deze animatie is niet ingesteld op "Loop". Wijzig de waarde naar "Loop" voordat je markers instelt.
+          tooManyMarkers:
+            message: Deze animatie bevat al 2 "Loop Start/End"-markers! Klik er met de rechtermuisknop op om ze indien nodig te verwijderen.
+      settings:
+        frameScoreboardObjective:
+          title: Frame-scoreboard
+          description:
+          - De naam van de scoreboard objective die wordt gebruikt om bij te houden welk frame van een animatie hierna moet worden afgespeeld
+
+        animatingFlagScoreboardObjective:
+          title: Animatievlag-scoreboard
+          description:
+          - De naam van de scoreboard objective die wordt gebruikt om te controleren of een rig actief animeert
+
+        animationLoopModeScoreboardObjective:
+          title: Scoreboard voor animatielusmodus
+          description:
+          - De naam van de scoreboard objective die wordt gebruikt om het lusgedrag van elke animatie te regelen
+      other:
+        addLoopMarker: Loop Start/End-marker toevoegen
+        toggleLoopMarkers: Loop Start/End-markers instellen/verwijderen

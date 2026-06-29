@@ -1,9 +1,26 @@
+import compareVersions from 'compare-versions'
+
 type FetchJsonOptions = {
 	method?: string
 	headers?: Record<string, string>
 	body?: BodyInit | null
 	timeoutMs?: number
 	token?: string | null
+}
+
+const RELEASES_LATEST_URL = 'https://api.github.com/repos/ItemsAdder/itemsadder-entity/releases/latest'
+
+export function normalizeVersion(version: unknown) {
+	if (typeof version !== 'string') return null
+	const normalized = version.trim().replace(/^v/i, '').replace(/\+.*/, '')
+	return compareVersions.validate(normalized) ? normalized : null
+}
+
+export function isRemoteVersionNewer(currentVersion: unknown, latestVersion: unknown) {
+	const current = normalizeVersion(currentVersion)
+	const latest = normalizeVersion(latestVersion)
+	if (!current || !latest) return false
+	return compareVersions(latest, current) > 0
 }
 
 async function fetchJson(url: string, {
@@ -63,28 +80,14 @@ export async function checkForUpdates() {
 	try {
 		const currentVersion = process.env.PLUGIN_VERSION;
 		if (!currentVersion) {
-			throw new Error('Current version is not defined in the environment variables.');
+			console.warn('Skipping update check: current version is not defined.');
+			return
 		}
 
-		const { data } = await fetchJson('https://api.github.com/repos/ItemsAdder/itemsadder-entity/releases/latest');
+		const { data } = await fetchJson(RELEASES_LATEST_URL);
 		const latestVersion = data.tag_name;
 
-		const latestParts = latestVersion.replace(/^v/, '').split('.').map(Number);
-		const currentParts = currentVersion.replace(/^v/, '').split('.').map(Number);
-
-		let isNewer = false;
-		for (let i = 0; i < Math.max(latestParts.length, currentParts.length); i++) {
-			const latest = latestParts[i] || 0;
-			const current = currentParts[i] || 0;
-			if (latest > current) {
-				isNewer = true;
-				break;
-			} else if (latest < current) {
-				break;
-			}
-		}
-
-		if (!isNewer) {
+		if (!isRemoteVersionNewer(currentVersion, latestVersion)) {
 			return;
 		}
 
@@ -109,7 +112,7 @@ export async function checkForUpdates() {
 				});
 			}
 		});
-	} catch (error) {
-		console.error('Error checking for updates:', error);
+	} catch (error: any) {
+		console.warn('Skipping update check:', error?.message || error);
 	}
 }

@@ -4,3 +4,4 @@ test_export/
 .vscode
 .idea/
 .DS_Store
+test-fixtures/
