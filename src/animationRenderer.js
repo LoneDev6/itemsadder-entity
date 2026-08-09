@@ -196,7 +196,7 @@ const Cache = new (class {
 			console.log(`Anim Cache: using cache at ${this.tmp}`)
 			mkdirSync(this.tmp, { recursive: true })
 			for (const [key, value] of this.data) {
-				writeFileSync(path.join(this.tmp, key), animToWriteable(value))
+				writeFileSync(path.join(this.tmp, key + '.anim_data'), animToWriteable(value))
 			}
 		} else if (existsSync(this.tmp)) {
 			console.log(`Anim Cache: removing cache at ${this.tmp}`)

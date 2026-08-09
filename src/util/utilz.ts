@@ -48,23 +48,20 @@ export function getProjectRootFolder() {
     return path.normalize(dirPath)
 }
 
-function shouldExportIntoAssets(projectRoot: string) {
-    return fs.existsSync(path.join(projectRoot, 'assets'))
-}
-
-function getAssetsRootFolder(projectRoot: string) {
-    if (shouldExportIntoAssets(projectRoot)) {
-        return projectRoot
-    }
-
-    return path.join(projectRoot, 'resourcepack')
+function getResourceRootFolder(projectRoot: string, namespace: string, requireExplicitNamespace = false) {
+    const resourcepack = path.join(projectRoot, 'resourcepack')
+    if (fs.existsSync(path.join(resourcepack, 'assets'))) return path.join(resourcepack, 'assets', namespace)
+    if (fs.existsSync(path.join(resourcepack, namespace))) return path.join(resourcepack, namespace)
+    if (fs.existsSync(path.join(projectRoot, 'assets'))) return path.join(projectRoot, 'assets', namespace)
+    if (fs.existsSync(path.join(projectRoot, namespace))) return path.join(projectRoot, namespace)
+    if (fs.existsSync(resourcepack) || requireExplicitNamespace) return path.join(resourcepack, 'assets', namespace)
+    return projectRoot
 }
 
 export function getModelExportFolder(settings) {
     const projectRoot = getProjectRootFolder()
-    const folderParts = shouldExportIntoAssets(projectRoot)
-        ? [projectRoot, "assets", settings.iaentitymodel.namespace, "models", "entity", settings.iaentitymodel.projectName]
-        : [projectRoot, "models", "entity", settings.iaentitymodel.projectName]
+    const resourceRoot = getResourceRootFolder(projectRoot, settings.iaentitymodel.namespace)
+    const folderParts = [resourceRoot, "models", "entity", settings.iaentitymodel.projectName]
 
     const modelsPath = normalizePath(path.join(...folderParts))
 
@@ -78,10 +75,8 @@ export function getModelExportFolder(settings) {
 
 export function getAdvancedPlayerModelExportFolder(settings) {
     const projectRoot = getProjectRootFolder()
-    const assetsRoot = getAssetsRootFolder(projectRoot)
-    const folderParts = assetsRoot
-        ? [assetsRoot, "assets", settings.iaentitymodel.namespace, "models", "entity", settings.iaentitymodel.projectName]
-        : [projectRoot, "models", "entity", settings.iaentitymodel.projectName]
+    const resourceRoot = getResourceRootFolder(projectRoot, settings.iaentitymodel.namespace, true)
+    const folderParts = [resourceRoot, "models", "entity", settings.iaentitymodel.projectName]
 
     const modelsPath = normalizePath(path.join(...folderParts))
     fs.mkdirSync(modelsPath, {recursive: true})
@@ -90,9 +85,8 @@ export function getAdvancedPlayerModelExportFolder(settings) {
 
 export function getTexturesExportFolder(settings) {
     const projectRoot = getProjectRootFolder()
-    const folderParts = shouldExportIntoAssets(projectRoot)
-        ? [projectRoot, "assets", settings.iaentitymodel.namespace, "textures", "entity", settings.iaentitymodel.projectName]
-        : [projectRoot, "textures", "entity", settings.iaentitymodel.projectName]
+    const resourceRoot = getResourceRootFolder(projectRoot, settings.iaentitymodel.namespace)
+    const folderParts = [resourceRoot, "textures", "entity", settings.iaentitymodel.projectName]
 
     const texturesPath = normalizePath(path.join(...folderParts))
 

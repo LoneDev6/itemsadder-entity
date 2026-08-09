@@ -11,7 +11,6 @@ import { registerPluginDefinition } from './pluginDefinitions'
 import './rotationSnap'
 import './ui/panel/states'
 import './ui/dialogs/settings'
-import { store } from './util/store'
 import { ERROR } from './util/errors'
 import { CustomError } from './util/customError'
 import { format as modelFormat } from './modelFormat'
@@ -79,12 +78,8 @@ async function computeAnimationData(
 	if(isInternalModel(settings)) {
 		// Or getModelExportFolder won't work
 		if (!Project) return
-		const lastProjectSavePath = store.get('lastProjectSavePath')
 		if (!Project.save_path && Project.export_path) {
 			Project.save_path = Project.export_path
-		}
-		if (!Project.save_path && lastProjectSavePath) {
-			Project.save_path = lastProjectSavePath
 		}
 		if(!Project.save_path) {
 			Blockbench.showQuickMessage(tl('iaentitymodel.popups.projectNotSaved'))
@@ -185,4 +180,3 @@ KeyframeDataPoint["properties"].effect.condition = (point) => { return Format.id
 KeyframeDataPoint["properties"].script.condition = (point) => { return Format.id !== modelFormat.id && ['particle', 'timeline'].includes(point.keyframe.channel) }
 KeyframeDataPoint["properties"].locator.condition = (point) => { return Format.id !== modelFormat.id && 'particle' == point.keyframe.channel }
 KeyframeDataPoint["properties"].file.condition = (point) => { return Format.id !== modelFormat.id && ['particle', 'sound'].includes(point.keyframe.channel) }
-

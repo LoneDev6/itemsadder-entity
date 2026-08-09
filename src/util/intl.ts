@@ -65,6 +65,7 @@ class Intl {
 	// }
 	register(name: string, dict: any) {
 		this.dict[name] = dict
+		Intl.translationCache = {}
 	}
 	diff(showDefaultValues: boolean) {
 		throw new Error('Not implemented')

@@ -36,12 +36,8 @@ function isItemsAdderProjectOpen() {
 
 function runSelectedExporter() {
 	if (!Project) return
-	const lastProjectSavePath = store.get('lastProjectSavePath')
 	if ((!Project.save_path || Project.save_path === '') && Project.export_path) {
 		Project.save_path = Project.export_path
-	}
-	if ((!Project.save_path || Project.save_path === '') && lastProjectSavePath) {
-		Project.save_path = lastProjectSavePath
 	}
 
 	if (!Project.save_path || Project.save_path === '') {

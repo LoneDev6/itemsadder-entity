@@ -11,6 +11,7 @@ const ITEMSADDER_CONTENTS_LAYOUTS = [
 ]
 
 export function getItemsAdderContentsNamespace(projectFolder: string) {
+	projectFolder = projectFolder.replace(/\\/g, '/')
 	for (const layout of ITEMSADDER_CONTENTS_LAYOUTS) {
 		const contentsFolderMatch = projectFolder.match(layout)
 		if (contentsFolderMatch?.[1]) return contentsFolderMatch[1]
@@ -104,6 +105,14 @@ export function syncEmoteYaml(
 	staticAnimationUuid: string
 ) {
 	const files = getAllYmlFiles(projectFolder)
+	const projectYmlFile = path.join(projectFolder, `custom_emote_${projectName}.yml`)
+	const emoteNames = new Set(
+		Object.entries(animations)
+			.filter(([key, animation]) => key !== staticAnimationUuid && animation && typeof animation.name === 'string')
+			.map(([, animation]) => animation.name)
+	)
+	const projectFileIndex = files.indexOf(projectYmlFile)
+	if (projectFileIndex >= 0) files.unshift(...files.splice(projectFileIndex, 1))
 	let yamlData: any = undefined
 	let ymlFile: string | undefined = undefined
 
@@ -113,6 +122,7 @@ export function syncEmoteYaml(
 
 		console.log(`File ${file} contains the correct namespace: ${namespace}`)
 		if (!currentYamlData.emotes) continue
+		if (file !== projectYmlFile && !Object.keys(currentYamlData.emotes).some((name) => emoteNames.has(name))) continue
 
 		yamlData = currentYamlData
 		ymlFile = file
@@ -121,24 +131,12 @@ export function syncEmoteYaml(
 	}
 
 	if (!yamlData) {
-		ymlFile = path.join(projectFolder, `custom_emote_${projectName}.yml`)
+		ymlFile = projectYmlFile
 		yamlData = {
 			info: {
 				namespace,
 			},
 			emotes: {},
-		}
-	}
-
-	const validEmoteNames = new Set(
-		Object.values(animations)
-			.filter((animation) => animation && typeof animation.name === 'string')
-			.map((animation) => animation.name)
-	)
-
-	for (const emoteName of Object.keys(yamlData.emotes)) {
-		if (!validEmoteNames.has(emoteName)) {
-			delete yamlData.emotes[emoteName]
 		}
 	}
 

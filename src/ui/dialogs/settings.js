@@ -530,7 +530,6 @@ function hide_settings() {
 	visible = false
 }
 export function show_settings() {
-	mouseUpYet = true
 	console.log('show settings')
 	el.hidden = false
 	visible = true
