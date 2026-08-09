@@ -9,7 +9,7 @@
 		"sync:version": "node dist/tools/syncVersion.js",
 		"build:scripts": "rollup --config ./config/tools.rollup.config.js",
 		"rollup": "rollup --config ./config/dev.animated-java.rollup.config.js",
-		"dev": "node dist/tools/scripts/watch.js",
+		"dev": "npm run build:scripts && node dist/tools/scripts/watch.js",
 		"build:app": "node dist/tools/scripts/build.js",
 		"build": "npm run build:scripts && npm run build:app",
 		"lint": "prettier --write .",
