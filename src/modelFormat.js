@@ -162,7 +162,6 @@ const codec = new Codec('iaentitymodel', {
 				content: scope.compile(),
 				custom_writer: isApp ? (content, filePath) => {
 					scope.write(scope.compile({ savePath: filePath }), filePath)
-					scope.afterSave(filePath)
 				} : null,
 			},
 			(path) => scope.afterDownload(path)

@@ -4,6 +4,8 @@ import {isInternalModel} from "../../util/utilz";
 import { settings } from '../../settings'
 import { CustomError } from '../../util/customError'
 import { isLoopMarker, LOOP_MARKER_COLOR, LOOP_MARKER_NAME } from '../../constants/loopMarkers'
+import events from '../../constants/events'
+import { bus } from '../../util/bus'
 
 let registered = false
 
@@ -12,12 +14,12 @@ export function registerAnimConfigMod() {
 	registered = true
 
 // Properties registration to make Blockbench save them in the project file
-new Property(Animation, 'string', 'animType', {
+const animTypeProperty = new Property(Animation, 'string', 'animType', {
 	default: () => undefined,
 	exposed: true,
 	condition: (val: any) => val !== undefined && val !== ""
 })
-new Property(Animation, 'string', 'canPlayerMove', {
+const canPlayerMoveProperty = new Property(Animation, 'string', 'canPlayerMove', {
 	default: () => undefined,
 	exposed: true,
 	condition: (val: any) => val !== undefined && val !== ""
@@ -71,29 +73,39 @@ const handleClick_canPlayerMove = (animation, val) => {
 	}
 }
 
-// @ts-ignore
-Animation.prototype.menu.structure.splice(12, 0, '_')
-
 let isInternalModel_ = () => isInternalModel(settings)
 
-// @ts-ignore
-Animation.prototype.menu.structure.splice(13, 0, {name: tl('iaentitymodel.menu.animation.animType.title'), icon: 'movie', children: [
+const animationTypeTitle = tl('iaentitymodel.menu.animation.animType.title')
+const canPlayerMoveTitle = tl('Can Player Move')
+// @ts-ignore Remove entries left behind by versions that did not clean up on unload.
+const animationMenu = Animation.prototype.menu.structure
+for (let index = animationMenu.length - 1; index >= 0; index--) {
+	if (animationMenu[index]?.name !== animationTypeTitle) 
+		continue
+	const start = animationMenu[index - 1] === '_' ? index - 1 : index
+	let end = animationMenu[index + 1]?.name === canPlayerMoveTitle ? index + 1 : index
+	if (animationMenu[end + 1] === '_') 
+		end++
+	animationMenu.splice(start, end - start + 1)
+}
+
+const animationTypeMenu = {name: animationTypeTitle, icon: 'movie', children: [
 	{name: tl('iaentitymodel.menu.animation.animType.value.other'), icon: animation => (animation.animType == 'other' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick_animType(animation, "other") }, condition: isCustomFormat},
 	{name: tl('iaentitymodel.menu.animation.animType.value.idle'), icon: animation => (animation.animType == 'idle' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick_animType(animation, "idle") }, condition: isCustomFormat},
 	{name: tl('iaentitymodel.menu.animation.animType.value.walk'), icon: animation => (animation.animType == 'walk' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick_animType(animation, "walk") }, condition: isCustomFormat},
 	{name: tl('iaentitymodel.menu.animation.animType.value.attack'), icon: animation => (animation.animType == 'attack' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick_animType(animation, "attack") }, condition: isCustomFormat},
 	{name: tl('iaentitymodel.menu.animation.animType.value.death'), icon: animation => (animation.animType == 'death' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick_animType(animation, "death") }, condition: isCustomFormat},
 	{name: tl('iaentitymodel.menu.animation.animType.value.fly'), icon: animation => (animation.animType == 'fly' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick_animType(animation, "fly") }, condition: isCustomFormat},
-]})
-// @ts-ignore
-Animation.prototype.menu.structure.splice(14, 0, {name: tl("Can Player Move"), icon: 'movie', children: [
+]}
+const canPlayerMoveMenu = {name: canPlayerMoveTitle, icon: 'movie', children: [
 	{name: tl("True"), icon: animation => (animation.canPlayerMove == 'true' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick_canPlayerMove(animation, "true") }, condition: isInternalModel_},
 	{name: tl("False"), icon: animation => (animation.canPlayerMove == 'false' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick_canPlayerMove(animation, "false") }, condition: isInternalModel_},
-]})
-// @ts-ignore
-Animation.prototype.menu.structure.splice(15, 0, '_')
+]}
+const animationMenuEntries = [new MenuSeparator(), animationTypeMenu, canPlayerMoveMenu, new MenuSeparator()]
+animationMenu.splice(12, 0, ...animationMenuEntries)
 
 
+const previousLoopMarkerColor = markerColors[-1]
 markerColors[-1] = {pastel: '#ffffff', standard: '#ffffff', name: 'loop_start_end'}
 
 
@@ -151,7 +163,7 @@ function toggleLoopMarkers() {
 
 let activePlaybackLoopMarkers = null
 const originalTimelineStart = Timeline.start
-Timeline.start = function () {
+const patchedTimelineStart = function () {
 	const animation = (Animation as any).selected
 	const loopMarkers = isCustomFormat() && animation?.loop === 'loop'
 		? getLoopStartEndMarkers(animation)
@@ -161,9 +173,10 @@ Timeline.start = function () {
 		: null
 	return originalTimelineStart.apply(this, arguments)
 }
+Timeline.start = patchedTimelineStart
 
 const originalTimelineLoop = Timeline.loop
-Timeline.loop = function () {
+const patchedTimelineLoop = function () {
 	const loopMarkers = activePlaybackLoopMarkers
 
 	if (!loopMarkers) {
@@ -179,26 +192,50 @@ Timeline.loop = function () {
 		timeline.custom_range = previousRange
 	}
 }
+Timeline.loop = patchedTimelineLoop
 
-new Action('add_loop_marker', {
+BarItems['add_loop_marker']?.delete()
+const addLoopMarkerAction = new Action('add_loop_marker', {
 	name: tl("iaentitymodel.exporters.vanillaAnimation.other.toggleLoopMarkers"),
 	icon: 'update',
 	category: 'animation',
 	condition: () => {
-		// @ts-ignore
-		return isCustomFormat() && Mode.selected?.name === 'Animate' && Animation.selected?.loop === 'loop'
+		return isCustomFormat() && (globalThis as any).Mode.selected?.name === 'Animate' && (Animation as any).selected?.loop === 'loop'
 	},
 	click: toggleLoopMarkers
-	// @ts-ignore
-}).pushToolbar(Toolbars.timeline, 1)
-
+})
 // @ts-ignore
-Blockbench.on('select_project', () => {
+addLoopMarkerAction.pushToolbar(Toolbars.timeline, 1)
+
+const handleSelectProject = () => {
 	queueMicrotask(() => {
 		if(Format.id === modelFormat.id) {
 			// Refresh animation icons
 			refreshAnimIcons()
 		}
 	})
+}
+// @ts-ignore
+Blockbench.on('select_project', handleSelectProject)
+
+bus.on(events.LIFECYCLE.CLEANUP, () => {
+	registered = false
+	animationMenuEntries.forEach((entry) => {
+		const index = animationMenu.indexOf(entry)
+		if (index !== -1) animationMenu.splice(index, 1)
+	})
+	if (Timeline.start === patchedTimelineStart) 
+		Timeline.start = originalTimelineStart
+	if (Timeline.loop === patchedTimelineLoop) 
+		Timeline.loop = originalTimelineLoop
+	addLoopMarkerAction.delete()
+	// @ts-ignore Blockbench 5 API missing from the bundled Blockbench 4 typings
+	Blockbench.removeListener('select_project', handleSelectProject)
+	animTypeProperty.delete()
+	canPlayerMoveProperty.delete()
+	if (previousLoopMarkerColor === undefined) 
+		delete markerColors[-1]
+	else 
+		markerColors[-1] = previousLoopMarkerColor
 })
 }
